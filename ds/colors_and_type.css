@@ -1,0 +1,112 @@
+/* AtomGo Design System — Colors & Typography
+ * Source of truth: Figma "AtomGo.fig" + docs/07_ui_direction_from_refs.md
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Brand fonts uploaded by the user. Used directly when present, otherwise
+ * we fall back to the @import'd Google Fonts above. */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('fonts/sf_pro_display_light.otf') format('opentype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('fonts/sf_pro_text_bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/font_inter_semi_bold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  /* === Surfaces === */
+  --bg-app: #F7F8FA;          /* rgb(247,248,250) — primary screen background */
+  --bg-card: #FAFBFB;          /* rgb(250,251,251) — list/card surface */
+  --bg-card-2: #FCFCFD;        /* rgb(252,252,253) — tabbar / floating */
+  --bg-white: #FFFFFF;
+  --bg-input-icon: #EAEAF0;    /* rgb(234,234,240) — icon backplate inside cards */
+
+  /* === Text === */
+  --fg-primary: #111827;        /* rgb(17,24,39) — body / titles */
+  --fg-strong: #141718;          /* rgb(20,23,24) — top-bar titles */
+  --fg-darkest: #141416;         /* rgb(20,20,22) — active tab + accent */
+  --fg-muted: rgba(17,24,39,0.5);/* secondary copy in cards */
+  --fg-placeholder: #C2C3CB;     /* rgb(194,195,203) — input placeholder */
+  --fg-icon: #9E9E9E;            /* rgb(158,158,158) — inactive icons + ghost lines */
+  --fg-icon-2: #A7A7AB;          /* rgb(167,167,171) — chevron */
+  --fg-on-color: #FFFFFF;
+
+  /* === Brand / Status === */
+  --brand-blue: #163580;         /* rgb(22,53,128) — accent (logo + primary highlight) */
+  --debt-red: #D63034;            /* rgb(214,48,52) — debt pill */
+  --debt-red-strong: #FF453A;     /* rgb(255,69,58) — debt text emphasis */
+  --profit-green: #238F47;        /* rgb(35,143,71) — profit pill */
+  --status-green: #34C759;        /* rgb(52,199,89) — active rental ring */
+  --status-yellow: #FFCC00;       /* rgb(255,204,0) — warning ring */
+  --status-magenta: #CB30E0;      /* rgb(203,48,224) — inactive ring */
+  --eco-green: #08A74E;           /* per docs/07_ui_direction */
+  --warn-orange: #E28A00;         /* per docs/07_ui_direction */
+
+  /* === Borders / Dividers === */
+  --border-light: #DADADA;        /* rgb(218,218,218) — tabbar 1px hairline */
+  --divider: #EDEDED;             /* per docs/07 — list dividers */
+
+  /* === Shadows === */
+  --shadow-card: 0 20px 30px rgba(25,28,50,0.10);     /* rgba(25,28,50,0.1) — list cards */
+  --shadow-float: 5.92px 11.84px 23.68px rgba(211,209,216,0.30); /* logout button */
+
+  /* === Radii === */
+  --radius-pill: 999px;
+  --radius-screen: 18px;
+  --radius-card: 15px;
+  --radius-input: 12.84px;
+  --radius-button: 16px;
+
+  /* === Spacing scale (4-pt) === */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+
+  /* === Type families ===
+   * SF Pro Display is system-only on Apple devices. We substitute the
+   * nearest Google Font (Inter) for non-Apple platforms. Urbanist + Poppins
+   * are used verbatim from Google Fonts.
+   */
+  --font-display: 'Urbanist', 'Inter', -apple-system, system-ui, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-form: 'Poppins', 'Inter', system-ui, sans-serif;
+
+  /* === Type scale === */
+  --t-hero: 700 40px/1.6 var(--font-display);   /* "Welcome to AtomGo" */
+  --t-h1: 700 22px/34.88px var(--font-ui);       /* Top bar titles */
+  --t-h2: 700 18px/24px var(--font-ui);
+  --t-card-title: 700 15px/100% var(--font-ui);  /* Person card name */
+  --t-card-sub: 700 12px/100% var(--font-ui);    /* Person card subtitle */
+  --t-pill: 700 15px/20px var(--font-ui);        /* Долг / Прибыль */
+  --t-input: 500 14px/100% var(--font-form);     /* Form labels & placeholders, -2% tracking */
+  --t-button: 500 15px/23px var(--font-form);    /* CTA "Get started", +3% tracking */
+  --t-mono-money: 700 15px/20px var(--font-ui);
+}
+
+/* === Semantic helpers === */
+body { background: var(--bg-app); color: var(--fg-primary); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.h1 { font: var(--t-h1); color: var(--fg-strong); }
+.h2 { font: var(--t-h2); color: var(--fg-primary); }
+.hero { font: var(--t-hero); color: #212121; text-align: center; }
+.card-title { font: var(--t-card-title); color: var(--fg-primary); }
+.card-sub { font: var(--t-card-sub); color: var(--fg-muted); }
+.pill-text { font: var(--t-pill); color: var(--fg-on-color); }
+.input-text { font: var(--t-input); letter-spacing: -0.02em; }
+.button-text { font: var(--t-button); letter-spacing: 0.03em; }
