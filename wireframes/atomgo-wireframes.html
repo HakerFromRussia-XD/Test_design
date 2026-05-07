@@ -491,8 +491,20 @@ body { background: var(--bg-app); color: var(--fg-primary); font-family: var(--f
       <div class="wf-screen-caption">Поиск по ФИО / телефону / паспорту, фильтры «Должники» и «Активные», группировка по букве.</div>
     </div>
     <div class="wf-cell"><div id="screen-card"></div>
-      <div class="wf-screen-label"><span class="wf-screen-num">06</span><span class="wf-screen-title">Карточка клиента</span></div>
-      <div class="wf-screen-caption">Контакты + документы (видео, договор, комментарий) + список аренд этого клиента.</div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06</span><span class="wf-screen-title">Карточка · Активный</span></div>
+      <div class="wf-screen-caption">Велосипед в шапке + финансы (4 числа) + Профиль с «Удалить» + История аренд.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-inactive"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06b</span><span class="wf-screen-title">Карточка · Неактивный</span></div>
+      <div class="wf-screen-caption">Без блока велосипеда — компактная шапка с ФИО и статусом «Неактивный».</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-confirm"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06c</span><span class="wf-screen-title">Удаление клиента</span></div>
+      <div class="wf-screen-caption">Диалог подтверждения по тапу на «Удалить клиента».</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-edit"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06d</span><span class="wf-screen-title">Редактирование клиента</span></div>
+      <div class="wf-screen-caption">Те же поля, что в «Новом клиенте», заполнены текущими данными + «Удалить клиента» внизу.</div>
     </div>
     <div class="wf-cell"><div id="screen-newclient"></div>
       <div class="wf-screen-label"><span class="wf-screen-num">07</span><span class="wf-screen-title">Новый клиент</span></div>
@@ -503,8 +515,24 @@ body { background: var(--bg-app); color: var(--fg-primary); font-family: var(--f
       <div class="wf-screen-caption">Сводка + группировка «Свободные / В аренде». Карточка показывает фото, модель, SN, ставку.</div>
     </div>
     <div class="wf-cell"><div id="screen-newbike"></div>
-      <div class="wf-screen-label"><span class="wf-screen-num">09</span><span class="wf-screen-title">Новый велосипед</span></div>
-      <div class="wf-screen-caption">Обязательные: модель, VIN, мотор, ставка W. Опционально: серийники АКБ 1 и АКБ 2.</div>
+      <div class="wf-screen-label"><span class="wf-screen-num">09a</span><span class="wf-screen-title">Новый велосипед — пусто</span></div>
+      <div class="wf-screen-caption">Слот фото пустой: пунктирная рамка, иконка фото, подпись «Загрузить фото» и «+» в углу — явная точка тапа.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newbike-filled"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">09b</span><span class="wf-screen-title">Новый велосипед — с фото</span></div>
+      <div class="wf-screen-caption">Фото загружено: чип «Изменить» в углу + полоса «Сменить фото» снизу + красная иконка удаления — пользователь точно видит где менять.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10a</span><span class="wf-screen-title">Новая аренда — пусто</span></div>
+      <div class="wf-screen-caption">Дропдаун в состоянии «не выбрано»: тёмная полоска слева, серая подпись, чип-шеврон вниз.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent-open"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10b</span><span class="wf-screen-title">Новая аренда — открыто</span></div>
+      <div class="wf-screen-caption">Дропдаун раскрыт: подсветка поля, шеврон-чип становится тёмным и переворачивается, попап со списком.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent-selected"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10c</span><span class="wf-screen-title">Новая аренда — выбрано</span></div>
+      <div class="wf-screen-caption">Дропдаун со значением: жирный текст, чёрная полоска слева во всю высоту, чип-шеврон серый.</div>
     </div>
   </div>
 </div>
@@ -1142,6 +1170,15 @@ function WFTopBar({ title, leading = 'menu', trailing = 'menu' }) {
         </div>
       );
     }
+    if (kind === 'edit') {
+      return (
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+      );
+    }
     // menu (•••)
     return (
       <div className="wf-topbar__btn wf-topbar__btn--ghost">
@@ -1205,8 +1242,9 @@ function WFText({ w, h = 10, tier = 1, style = {}, className = '' }) {
 function WFPersonRow({ ringColor = 'green', titleW = 140, lines = [120, 90], pill, x = 23, y = 0, onClickStatus }) {
   return (
     <div className="wf-card" style={{
-      position:'absolute', left: x, top: y, width: 369, height: 110,
-      padding: '21px 12px 21px 19px',
+      position:'absolute', left: x, top: y, width: 368, height: 110,
+      padding: '21px 14px 21px 18px',
+      boxSizing: 'border-box',
       display: 'flex', alignItems: 'center', gap: 16,
     }}>
       <div className={`wf-thumb wf-thumb--${ringColor}`} onClick={onClickStatus}/>
@@ -1237,82 +1275,111 @@ function ClientRental({ sheetOpen = true }) {
       <WFTopBar title="Моя аренда" leading="logout" trailing="menu"/>
 
       {/* Bike hero card */}
-      <div className="wf-card" style={{ position:'absolute', left:23, top:102, width:368, height:182, padding:21 }}>
-        <div style={{display:'flex', gap:18}}>
-          <div className="wf-square" style={{width:84, height:84, borderRadius:18, boxShadow:'inset 0 0 0 3px #34C759'}}/>
-          <div style={{flex:1, paddingTop:6, display:'flex', flexDirection:'column', gap:8}}>
-            <WFText w={70} h={9} tier={1}/>
-            <WFText w={170} h={16} tier={3}/>
-            <WFText w={120} h={10} tier={1}/>
+      <div className="wf-card" style={{ position:'absolute', left:23, top:102, width:368, padding:'20px 22px', boxSizing:'border-box', display:'flex', flexDirection:'column', gap:16 }}>
+        <div style={{display:'flex', gap:16, alignItems:'center'}}>
+          <div className="wf-square" style={{width:84, height:84, borderRadius:18, flexShrink:0}}/>
+          <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}>
+            <div style={{font:'500 11px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>№1</div>
+            <div style={{font:'700 16px/1.2 Inter,sans-serif', color:'var(--wf-stroke)'}}>Wenbox Monster</div>
+            <div style={{font:'500 12px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>3 000 ₽/нед</div>
           </div>
         </div>
-        <div style={{position:'absolute', left:21, right:21, top:138, height:1, background:'#EDEDED'}}/>
-        <div style={{position:'absolute', left:21, top:150, display:'flex', gap:40}}>
-          <div style={{display:'flex', flexDirection:'column', gap:6}}>
-            <WFText w={70} h={8} tier={1}/>
-            <WFText w={92} h={12} tier={3}/>
-          </div>
-          <div style={{display:'flex', flexDirection:'column', gap:6}}>
-            <WFText w={80} h={8} tier={1}/>
-            <WFText w={70} h={12} tier={3}/>
-          </div>
+        <div style={{height:1, background:'#EDEDED'}}/>
+        <div style={{display:'flex', justifyContent:'space-between', gap:6}}>
+          {[['Долг','4 280 ₽','#D63034'],['Коррект.','0 ₽','#1f2937'],['Оплач. до','07 май 2026','#1f2937']].map((f,i)=>(
+            <div key={i} style={{display:'flex', flexDirection:'column', gap:3, minWidth:0}}>
+              <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.04em'}}>{f[0]}</div>
+              <div style={{font:'700 13px/1 Inter,sans-serif', color:f[2]}}>{f[1]}</div>
+            </div>
+          ))}
         </div>
-        <WFPin n="A" x={-12} y={-12} note="Велосипед: фото, модель, SN, оплачено до, ставка/нед" side="right"/>
-      </div>
-
-      {/* Debt callout */}
-      <div style={{
-        position:'absolute', left:23, top:300, width:368, height:88,
-        borderRadius:15, background:'#D63034',
-        boxShadow:'0 20px 30px rgba(25,28,50,0.10)',
-        padding:'18px 22px', color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between',
-      }}>
-        <div style={{display:'flex', flexDirection:'column', gap:8}}>
-          <div style={{font:'700 11px/1 Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.06em', opacity:.85}}>Текущий долг</div>
-          <div style={{font:'800 24px/1 Inter,sans-serif'}}>4 280 ₽</div>
-        </div>
-        <div style={{
-          padding:'10px 14px', borderRadius:10,
-          background:'rgba(255,255,255,0.18)', font:'600 12px/1 Inter,sans-serif',
-        }}>Оплатить весь</div>
-        <WFPin n="B" x={-12} y={-12} note="Красная плашка → зелёная если долга нет (Прибыль за период)" side="right"/>
+        <WFPin n="A" x={-12} y={-12} note="Велосипед + финансовый блок (4 числа), как в шапке 06" side="right"/>
       </div>
 
       {/* Quick-pay open trigger */}
-      <div style={{position:'absolute', left:23, top:406, width:368, display:'flex', flexDirection:'column', gap:14}}>
+      <div style={{position:'absolute', left:23, top:306, width:368, display:'flex', flexDirection:'column', gap:14}}>
         <div style={{font:'700 11px/1 Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.08em', color:'var(--wf-label)'}}>Быстрая оплата</div>
+        <div className="wf-btn wf-btn--danger" style={{width:'100%'}}>Оплатить весь долг · 4 280 ₽</div>
         <div className="wf-btn" style={{width:'100%'}}>Выбрать тариф ↑</div>
         <div style={{font:'400 12px/1.45 Inter,sans-serif', color:'var(--wf-label)', textAlign:'center'}}>
           Тап → шторка снизу с тарифами<br/>(на этом экране открыта по умолчанию)
         </div>
+        <WFPin n="B" x={395} y={20} note="Долг → красная кнопка наверху; тарифы — в шторке" side="left"/>
       </div>
 
       {/* Bottom sheet — payment options */}
       {sheetOpen && (
-        <div className="wf-sheet" style={{height: 358}}>
+        <div className="wf-sheet" style={{height: 384, bottom: -26}}>
           <div className="wf-sheet__handle"/>
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14}}>
             <div style={{font:'700 16px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>Оплата аренды</div>
             <div style={{font:'500 12px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Закрыть ✕</div>
           </div>
           <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
-            {['1 день · 580 ₽','1 неделя · 4 000 ₽','2 недели · 8 000 ₽','1 месяц · 16 000 ₽'].map((t, i) => (
+            {[
+              {label:'1 день', price:'580 ₽', icon:(
+                /* sun rising over horizon */
+                <svg width="90" height="90" viewBox="0 0 90 90" fill="none" stroke="#C9CBD0" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="55" cy="60" r="20" fill="#E2E4E8" stroke="none"/>
+                  <line x1="55" y1="22" x2="55" y2="32"/>
+                  <line x1="25" y1="60" x2="33" y2="60"/>
+                  <line x1="77" y1="60" x2="85" y2="60"/>
+                  <line x1="32" y1="38" x2="38" y2="44"/>
+                  <line x1="78" y1="38" x2="72" y2="44"/>
+                </svg>
+              )},
+              {label:'1 неделя', price:'4 000 ₽', icon:(
+                /* calendar week */
+                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <rect x="20" y="28" width="64" height="56" rx="6" fill="#E2E4E8" stroke="none"/>
+                  <rect x="20" y="28" width="64" height="56" rx="6"/>
+                  <line x1="20" y1="44" x2="84" y2="44"/>
+                  <line x1="34" y1="20" x2="34" y2="34"/>
+                  <line x1="70" y1="20" x2="70" y2="34"/>
+                  <line x1="36" y1="58" x2="44" y2="58"/>
+                  <line x1="50" y1="58" x2="58" y2="58"/>
+                  <line x1="64" y1="58" x2="72" y2="58"/>
+                  <line x1="36" y1="70" x2="44" y2="70"/>
+                </svg>
+              )},
+              {label:'2 недели', price:'8 000 ₽', icon:(
+                /* moon phases */
+                <svg width="110" height="90" viewBox="0 0 110 90" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <circle cx="22" cy="50" r="14" fill="#E2E4E8" stroke="#C9CBD0"/>
+                  <circle cx="55" cy="50" r="14" fill="#E2E4E8" stroke="#C9CBD0"/>
+                  <path d="M55 36 a14 14 0 0 1 0 28 z" fill="#C9CBD0" stroke="none"/>
+                  <circle cx="88" cy="50" r="14" fill="#C9CBD0" stroke="#C9CBD0"/>
+                </svg>
+              )},
+              {label:'1 месяц', price:'16 000 ₽', icon:(
+                /* calendar grid full month */
+                <svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <rect x="14" y="22" width="82" height="68" rx="6" fill="#E2E4E8" stroke="none"/>
+                  <rect x="14" y="22" width="82" height="68" rx="6"/>
+                  <line x1="14" y1="38" x2="96" y2="38"/>
+                  {[0,1,2,3,4].map(c => <line key={'v'+c} x1={14+(c+1)*82/6} y1="38" x2={14+(c+1)*82/6} y2="90"/>)}
+                  {[0,1,2].map(r => <line key={'h'+r} x1="14" y1={38+(r+1)*52/4} x2="96" y2={38+(r+1)*52/4}/>)}
+                  <line x1="30" y1="14" x2="30" y2="28"/>
+                  <line x1="80" y1="14" x2="80" y2="28"/>
+                </svg>
+              )},
+            ].map((t, i) => (
               <div key={i} style={{
-                height:72, borderRadius:14, background:'#FAFBFB',
+                position:'relative', height:96, borderRadius:14, background:'#FAFBFB',
                 border: i===1 ? '2px solid #1f2937' : '1px solid #ececef',
                 padding:'12px 14px', display:'flex', flexDirection:'column', justifyContent:'space-between',
                 font:'700 13px/1 Inter,sans-serif', color: i===1 ? '#1f2937' : 'var(--wf-stroke)',
+                overflow:'hidden',
               }}>
-                <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)'}}>{t.split(' · ')[0]}</div>
-                <div>{t.split(' · ')[1]}</div>
+                <div style={{position:'absolute', right:-18, bottom:-18, opacity:0.95, pointerEvents:'none'}}>{t.icon}</div>
+                <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)', position:'relative'}}>{t.label}</div>
+                <div style={{position:'relative'}}>{t.price}</div>
               </div>
             ))}
           </div>
           <div style={{height:14}}/>
-          <div className="wf-btn wf-btn--danger" style={{width:'100%'}}>Оплатить весь долг · 4 280 ₽</div>
-          <div style={{height:10}}/>
           <div className="wf-btn wf-btn--ghost" style={{width:'100%'}}>Оплатить выбранный · 4 000 ₽</div>
-          <WFPin n="C" x={20} y={-12} note="Шторка: 4 тарифа (день/нед/2 нед/мес) + «весь долг» + выбранный" side="right"/>
+          <WFPin n="C" x={20} y={-12} note="Шторка: 4 тарифа с тематическими картинками + кнопка оплаты" side="right"/>
         </div>
       )}
     </WFFrame>
@@ -1445,7 +1512,7 @@ function AdminRentDetail() {
             </div>
           </div>
         </div>
-        <WFPin n="1" x={-12} y={-12} note="Велосипед + статус (цвет рамки переключается тапом)" side="right"/>
+        <WFPin n="1" x={395} y={-12} note="Велосипед + статус (цвет рамки переключается тапом)" side="left"/>
       </div>
 
       {/* Renter row -> opens client card */}
@@ -1523,59 +1590,140 @@ function AdminAllClients() {
       </div>
       <WFPin n="1" x={395} y={120} note="Поиск по 3 ключам сразу + 2 фильтра" side="left"/>
 
-      <div style={{position:'absolute', left:23, top:206, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>А</div>
-      <WFPersonRow x={23} y={228} ringColor="green" titleW={140} lines={[120,90]} pill={{kind:'profit', label:'Активн.', value:'1'}}/>
-      <WFPersonRow x={23} y={353} ringColor="yellow" titleW={150} lines={[130,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
-      <div style={{position:'absolute', left:23, top:478, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>И</div>
-      <WFPersonRow x={23} y={500} ringColor="green" titleW={130} lines={[110,90]} pill={{kind:'profit', label:'Активн.', value:'2'}}/>
-      <WFPersonRow x={23} y={625} ringColor="magenta" titleW={140} lines={[140,80]}/>
-      <WFPin n="2" x={395} y={210} note="Группировка по букве (A→Я)" side="left"/>
-      <WFPin n="3" x={395} y={695} note="«+» в топ-баре → новый клиент (экран 7)" side="left"/>
+      <WFPersonRow x={23} y={206} ringColor="green" titleW={140} lines={[120,90]} pill={{kind:'profit', label:'Активн.', value:'1'}}/>
+      <WFPersonRow x={23} y={326} ringColor="yellow" titleW={150} lines={[130,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
+      <WFPersonRow x={23} y={446} ringColor="green" titleW={130} lines={[110,90]} pill={{kind:'profit', label:'Активн.', value:'2'}}/>
+      <WFPersonRow x={23} y={566} ringColor="magenta" titleW={140} lines={[140,80]}/>
+      <WFPin n="2" x={395} y={695} note="«+» в топ-баре → новый клиент (экран 7)" side="left"/>
 
       <WFTabBar active="clients"/>
     </WFFrame>
   );
 }
 
-function AdminClientCard() {
+function AdminClientCard({ active = true, confirmDelete = false } = {}) {
   return (
-    <WFFrame screenLabel="06 Admin · Карточка клиента">
-      <WFTopBar title="Клиент" leading="back" trailing="menu"/>
+    <WFFrame screenLabel={`06 Admin · Карточка клиента${confirmDelete ? ' · Подтверждение' : (active ? ' · Активный' : ' · Неактивный')}`}>
+      <WFTopBar title="Клиент" leading="back" trailing="none"/>
+      {/* Custom trailing cluster: edit + delete */}
+      <div style={{position:'absolute', right:23, top:41, height:45, display:'flex', gap:8, zIndex:5}}>
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <div className="wf-topbar__btn" style={{borderColor:'#D63034'}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D63034" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+          </svg>
+        </div>
+      </div>
 
-      <div className="wf-card" style={{position:'absolute', left:23, top:102, width:368, height:128, padding:'18px 22px', display:'flex', alignItems:'center', gap:14}}>
-        <div className="wf-circle" style={{width:64, height:64}}/>
-        <div style={{flex:1, display:'flex', flexDirection:'column', gap:6}}>
-          <WFText w={170} h={15} tier={3}/>
-          <WFText w={120} h={10} tier={1}/>
-          <div className="wf-pill wf-pill--profit" style={{minWidth:0, padding:'4px 10px', alignSelf:'flex-start', marginTop:6}}>
-            <div className="wf-pill__value" style={{fontSize:11}}>Активный клиент</div>
+      {/* UNIFIED PROFILE SECTION — bike header + finances + comment + fields all-in-one */}
+      <div style={{position:'absolute', left:23, top:118, width:368, display:'flex', flexDirection:'column', gap:18}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+
+        {active ? (
+          <div style={{display:'flex', gap:14, alignItems:'center'}}>
+            <div className="wf-square" style={{width:64, height:64, borderRadius:14, boxShadow:'inset 0 0 0 3px #34C759', flexShrink:0}}/>
+            <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}>
+              <div style={{font:'700 14px/1.2 Inter,sans-serif', color:'var(--wf-stroke)'}}>№1 Wenbox Monster</div>
+              <div style={{font:'500 12px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>3 000 ₽/нед</div>
+              <div className="wf-pill wf-pill--profit" style={{minWidth:0, padding:'4px 10px', alignSelf:'flex-start', marginTop:4}}>
+                <div className="wf-pill__value" style={{fontSize:11}}>Активный</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{display:'flex', alignItems:'center', justifyContent:'flex-start'}}>
+            <div className="wf-pill wf-pill--neutral" style={{minWidth:0, padding:'4px 10px'}}>
+              <div className="wf-pill__value" style={{fontSize:11}}>Неактивный</div>
+            </div>
+          </div>
+        )}
+
+        <div style={{display:'flex', justifyContent:'space-between', gap:6}}>
+          {(active
+            ? [['Оплачено','0 ₽','#1f2937'],['Долг','3 500 ₽','#D63034'],['Коррект.','0 ₽','#1f2937'],['Оплач. до','07 май 2025','#1f2937']]
+            : [['Оплачено','24 500 ₽','#1f2937'],['Долг','0 ₽','#1f2937'],['Коррект.','0 ₽','#1f2937'],['Послед.','12 мар 2025','#1f2937']]
+          ).map((f,i)=>(
+            <div key={i} style={{display:'flex', flexDirection:'column', gap:3, minWidth:0}}>
+              <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.04em'}}>{f[0]}</div>
+              <div style={{font:'700 13px/1 Inter,sans-serif', color:f[2]}}>{f[1]}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{display:'flex', flexDirection:'column', gap:4}}>
+          <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.06em'}}>Комментарий</div>
+          <div style={{font:'500 12px/1.4 Inter,sans-serif', color:'var(--wf-stroke)'}}>{active ? 'Платит вовремя, постоянный клиент с прошлого года.' : 'Уехал на лето, вернёт велик в сентябре.'}</div>
+        </div>
+
+        {[
+          ['ФИО','IP UI Client 0de20a0f3d'],
+          ['Адрес','Moscow, 0de20a0f3d'],
+          ['Паспорт','4321 0de20a0f3d'],
+        ].map((p,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{p[0]}</div>
+              <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>{p[1]}</div>
+            </div>
+          </div>
+        ))}
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Рабочий (TG)</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>+7 900 20a0f3d</div>
           </div>
         </div>
       </div>
-      <WFPin n="1" x={-12} y={90} note="Шапка: фото + ФИО + статус" side="right"/>
+      <WFPin n="1" x={-12} y={108} note="Один блок «Профиль»: велосипед + финансы + комментарий + поля + телефоны" side="right"/>
+      <WFPin n="2" x={395} y={50} note="Топбар: редактировать + удалить" side="left"/>
 
-      <div style={{position:'absolute', left:23, top:246, width:368, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Контакты</div>
-      <div style={{position:'absolute', left:23, top:266, width:368, display:'flex', flexDirection:'column', gap:8}}>
-        {['Телефон','Паспорт','Адрес','Логин'].map((l,i) => (
-          <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 14px', background:'#fff', borderRadius:10, border:'1px solid #ececef'}}>
-            <span style={{font:'500 12px/1 Inter,sans-serif', color:'var(--wf-label)'}}>{l}</span>
-            <WFText w={120} h={11} tier={3}/>
+      {/* PAST RENTALS */}
+      <div style={{position:'absolute', left:23, top: active ? 700 : 636, width:368, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>История аренд</div>
+      <div style={{position:'absolute', left:23, top: active ? 722 : 658, width:368, display:'flex', flexDirection:'column', gap:8}}>
+        {[
+          ['12 мар – 07 май 2025','UIBIKE_a0f3d','+24 500 ₽'],
+          ['02 янв – 28 фев 2025','UIBIKE_b71c2','+18 200 ₽'],
+        ].map((r,i) => (
+          <div key={i} className="wf-card" style={{padding:'12px 14px', display:'flex', alignItems:'center', gap:12}}>
+            <div className="wf-square" style={{width:36, height:36, borderRadius:10}}/>
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:3}}>
+              <span style={{font:'600 12px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>{r[0]}</span>
+              <span style={{font:'500 10px/1 Inter,sans-serif', color:'var(--wf-label)'}}>{r[1]}</span>
+            </div>
+            <span style={{font:'700 12px/1 Inter,sans-serif', color:'#238F47'}}>{r[2]}</span>
+            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
           </div>
         ))}
       </div>
+      <WFPin n="4" x={395} y={active ? 720 : 656} note="История аренд: даты, велосипед, заработано → детали" side="left"/>
 
-      <div style={{position:'absolute', left:23, top:466, width:368, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Документы</div>
-      <div style={{position:'absolute', left:23, top:486, width:368, display:'flex', flexDirection:'column', gap:8}}>
-        {['Видео приёма/передачи →','Договор аренды →','Комментарий'].map((l,i) => (
-          <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 14px', background:'#fff', borderRadius:10, border:'1px dashed var(--wf-stroke-soft)'}}>
-            <span style={{font:'500 12px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>{l}</span>
+      {/* DELETE CONFIRMATION DIALOG */}
+      {confirmDelete && (
+        <>
+          <div style={{position:'absolute', inset:0, background:'rgba(20,23,24,0.55)'}}/>
+          <div style={{
+            position:'absolute', left:'50%', top:'50%', transform:'translate(-50%,-50%)',
+            width: 300, background:'#fff', borderRadius:18, padding:'22px 22px 14px',
+            boxShadow:'0 30px 60px rgba(0,0,0,0.3)',
+          }}>
+            <div style={{font:'700 16px/1.2 Inter,sans-serif', color:'#1f2937', textAlign:'center', marginBottom:8}}>Удалить клиента?</div>
+            <div style={{font:'400 12px/1.4 Inter,sans-serif', color:'var(--wf-label)', textAlign:'center', marginBottom:18}}>
+              История аренд этого клиента будет утеряна. Действие необратимо.
+            </div>
+            <div style={{display:'flex', gap:8}}>
+              <div className="wf-btn wf-btn--ghost" style={{flex:1, height:42}}>Отмена</div>
+              <div className="wf-btn wf-btn--danger" style={{flex:1, height:42}}>Удалить</div>
+            </div>
           </div>
-        ))}
-      </div>
-      <WFPin n="2" x={395} y={486} note="Опциональные ссылки/поля — пунктир" side="left"/>
-
-      <div style={{position:'absolute', left:23, top:638, width:368, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Аренды клиента</div>
-      <WFPersonRow x={23} y={660} ringColor="yellow" titleW={130} lines={[140,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
+          <WFPin n="5" x={20} y={400} note="Подтверждение: «Удалить» — необратимо" side="right"/>
+        </>
+      )}
 
       <WFTabBar active="clients"/>
     </WFFrame>
@@ -1588,10 +1736,8 @@ function AdminNewClient() {
       <WFTopBar title="Новый клиент" leading="back" trailing="check"/>
 
       <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:18}}>
-        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Обязательные</div>
-        {[
-          'ФИО','Телефон','Паспорт серия','Паспорт номер','Адрес','Логин','Пароль (сгенерировать ↻)',
-        ].map((l,i) => (
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+        {['ФИО','Адрес','Паспортные данные'].map((l,i) => (
           <div key={i} className="wf-input">
             <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
               <div className="wf-input__label">{l}</div>
@@ -1599,18 +1745,38 @@ function AdminNewClient() {
             </div>
           </div>
         ))}
-        <WFPin n="1" x={395} y={140} note="Логин/пароль — кнопка «сгенерировать»" side="left"/>
+        <WFPin n="1" x={395} y={130} note="Профиль: ФИО, адрес, паспортные данные" side="left"/>
 
-        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Опционально</div>
-        {['Ссылка на видео приёма','Ссылка на договор','Комментарий'].map((l,i) => (
-          <div key={i} className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
-            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
-              <div className="wf-input__label">{l}</div>
-              <div className="wf-input__value">не обязательно</div>
-            </div>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        {/* Динамический список: подпись + телефон, повторяется */}
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>Рабочий (TG)</div>
           </div>
-        ))}
-        <WFPin n="2" x={395} y={690} note="Опц. блок: видео, договор, коммент — пунктирная рамка" side="left"/>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value">+7 …</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value">+7 …</div>
+          </div>
+        </div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить телефон</div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить комментарий</div>
+        <WFPin n="2" x={395} y={420} note="Телефоны — динамический список: пара (Подпись + Телефон)" side="left"/>
+        <WFPin n="3" x={395} y={720} note="Опц. кнопки: телефон, комментарий" side="left"/>
       </div>
 
       <WFTabBar active="clients"/>
@@ -1621,6 +1787,61 @@ function AdminNewClient() {
 window.AdminAllClients = AdminAllClients;
 window.AdminClientCard = AdminClientCard;
 window.AdminNewClient = AdminNewClient;
+
+// Screen 06d — Edit profile (similar to 07 but with prefilled values, "Сохранить")
+function AdminEditClient() {
+  return (
+    <WFFrame screenLabel="06d Admin · Редактирование клиента">
+      <WFTopBar title="Редактировать" leading="back" trailing="check"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:18}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+        {[
+          ['ФИО','IP UI Client 0de20a0f3d'],
+          ['Адрес','Moscow, 0de20a0f3d'],
+          ['Паспортные данные','4321 0de20a0f3d'],
+        ].map((p,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{p[0]}</div>
+              <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>{p[1]}</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="1" x={395} y={130} note="Поля заполнены текущими данными — редактируемы" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>Рабочий (TG)</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>+7 900 20a0f3d</div>
+          </div>
+        </div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить телефон</div>
+
+        <div className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)', height:'auto', minHeight:56, alignItems:'flex-start', padding:'14px 18px'}}>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Комментарий</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:500, lineHeight:1.4, whiteSpace:'normal'}}>Платит вовремя, постоянный клиент с прошлого года.</div>
+          </div>
+        </div>
+        <WFPin n="2" x={395} y={680} note="Комментарий — многострочный (как в шапке 06)" side="left"/>
+
+        <div className="wf-btn wf-btn--danger" style={{width:'100%', marginTop:8}}>Удалить клиента</div>
+        <WFPin n="3" x={395} y={760} note="Удаление — внизу, как destructive action" side="left"/>
+      </div>
+
+      <WFTabBar active="clients"/>
+    </WFFrame>
+  );
+}
+window.AdminEditClient = AdminEditClient;
 
 </script>
 
@@ -1685,18 +1906,47 @@ function AdminAllBikes() {
   );
 }
 
-function AdminNewBike() {
+function AdminNewBike({ hasPhoto = false }) {
   return (
-    <WFFrame screenLabel="09 Admin · Новый велосипед">
+    <WFFrame screenLabel={`09 Admin · Новый велосипед (${hasPhoto ? 'с фото' : 'пусто'})`}>
       <WFTopBar title="Новый велосипед" leading="back" trailing="check"/>
 
-      {/* Photo upload */}
-      <div style={{position:'absolute', left:23, top:102, width:368, height:160}}
-           className="wf-square" />
-      <div style={{position:'absolute', left:0, top:200, width:414, textAlign:'center', font:'500 12px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Загрузить фото</div>
-      <WFPin n="1" x={395} y={120} note="Слот фото велосипеда" side="left"/>
+      {/* Photo slot — empty state */}
+      {!hasPhoto && (
+        <>
+          <div style={{position:'absolute', left:23, top:102, width:368, height:200, borderRadius:14, background:'#EEF0F3', border:'1.5px dashed #1f2937', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12}}>
+            <div style={{width:56, height:56, borderRadius:14, background:'#fff', border:'1.5px solid #1f2937', display:'flex', alignItems:'center', justifyContent:'center'}}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div style={{font:'700 13px/1 Inter,sans-serif', color:'#1f2937'}}>Загрузить фото</div>
+            <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Нажмите, чтобы выбрать из галереи</div>
+          </div>
+          <WFPin n="1" x={395} y={120} note="Пустой слот: пунктирная рамка + иконка фото + подпись + «+» сверху-справа = «нажмите чтобы загрузить»" side="left"/>
+        </>
+      )}
 
-      <div style={{position:'absolute', left:23, top:282, width:368, display:'flex', flexDirection:'column', gap:14}}>
+      {/* Photo slot — filled state */}
+      {hasPhoto && (
+        <>
+          <div style={{position:'absolute', left:23, top:102, width:368, height:200, borderRadius:14, overflow:'hidden', border:'1.5px solid #1f2937', background:`#d3d7dd url('../ds/bike-photo.png') center/cover no-repeat`}}>
+            {/* Tap-to-change strip at the bottom */}
+            <div style={{position:'absolute', left:0, right:0, bottom:0, padding:'10px 14px', background:'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0))', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+              <div style={{font:'600 12px/1 Inter,sans-serif', color:'#fff', display:'flex', alignItems:'center', gap:6}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Сменить фото
+              </div>
+              <div style={{font:'500 11px/1 Inter,sans-serif', color:'rgba(255,255,255,0.85)'}}>тап по фото</div>
+            </div>
+            {/* Floating action chip in the corner */}
+            <div style={{position:'absolute', right:10, top:10, height:32, padding:'0 12px', borderRadius:16, background:'rgba(20,23,24,0.85)', display:'none', alignItems:'center', gap:6}}>
+              <span style={{font:'600 11px/1 Inter,sans-serif', color:'#fff'}}>Изменить</span>
+            </div>
+          </div>
+          <WFPin n="1" x={395} y={120} note="Заполненный слот: чип «Изменить» в углу + полоса «Сменить фото» снизу + красная иконка удалить — три явные точки тапа" side="left"/>
+        </>
+      )}
+
+      <div style={{position:'absolute', left:23, top:322, width:368, display:'flex', flexDirection:'column', gap:14}}>
         <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Обязательные</div>
         {['Название/модель','Серийный номер / VIN','Серийный номер мотора','Недельная ставка W (₽)'].map((l,i) => (
           <div key={i} className="wf-input">
@@ -1717,7 +1967,6 @@ function AdminNewBike() {
             </div>
           </div>
         ))}
-        <WFPin n="3" x={395} y={645} note="2 АКБ — опционально" side="left"/>
       </div>
 
       <WFTabBar active="bikes"/>
@@ -1727,6 +1976,145 @@ function AdminNewBike() {
 
 window.AdminAllBikes = AdminAllBikes;
 window.AdminNewBike = AdminNewBike;
+
+// Screen 10 — Admin · Новая аренда (модальный шит)
+// Dropdown component — visually distinct from text input.
+// states: 'empty' | 'selected' | 'open'
+function WFDropdown({ label, state = 'empty', value, placeholder = 'выбрать из списка' }) {
+  const isOpen = state === 'open';
+  const isSelected = state === 'selected';
+  return (
+    <div style={{
+      minHeight: 56,
+      borderRadius: 12.84,
+      background: isOpen ? '#F0F2F5' : '#fff',
+      border: '1.5px solid #1f2937',
+      boxShadow: isOpen ? '0 0 0 3px rgba(31,41,55,0.18)' : 'none',
+      display:'flex', alignItems:'center', gap:10, padding:'0 14px 0 18px',
+      position:'relative',
+    }}>
+      {/* Left bar to mark this is a picker, not a text field */}
+      <div style={{position:'absolute', left:0, top:8, bottom:8, width:4, borderRadius:'0 4px 4px 0', background: isSelected || isOpen ? '#1f2937' : '#cdd1d9'}}/>
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+        <div style={{font:'700 10px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>{label}</div>
+        <div style={{font: isSelected ? '600 13px/1 Inter,sans-serif' : '500 13px/1 Inter,sans-serif', color: isSelected ? 'var(--wf-stroke)' : 'var(--wf-fill-text)'}}>
+          {isSelected ? value : placeholder}
+        </div>
+      </div>
+      {/* Chevron rotates when open — explicit picker affordance */}
+      <div style={{
+        width:28, height:28, borderRadius:8,
+        background: isOpen ? '#1f2937' : '#EAEAF0',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .15s',
+      }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isOpen ? '#fff' : '#1f2937'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  );
+}
+
+function AdminNewRent({ bikeState = 'empty' }) {
+  // popover with 3 list items, anchored under the bike dropdown when open
+  const isOpen = bikeState === 'open';
+  const bikeValue = bikeState === 'selected' ? '№1 Wenbox · 3 000 ₽/нед' : null;
+  return (
+    <WFFrame screenLabel={`10 Admin · Новая аренда (${bikeState})`}>
+      <WFTopBar title="Новая аренда" leading="back" trailing="check"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:14}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Клиент и велосипед</div>
+
+        <WFDropdown label="Клиент" state="selected" value="Тестовый Клиент Иванович"/>
+        <div style={{position:'relative'}}>
+          <WFDropdown label="Велосипед" state={bikeState} value={bikeValue} placeholder="выбрать · покажет ставку"/>
+          {isOpen && (
+            <div style={{
+              position:'absolute', left:0, right:0, top:64,
+              background:'#fff', borderRadius:14,
+              border:'1.5px solid #1f2937',
+              boxShadow:'0 16px 30px rgba(25,28,50,0.22)',
+              padding:6, zIndex:30,
+            }}>
+              {[
+                {n:'№1 Wenbox', r:'3 000 ₽/нед', avail:true, hi:true},
+                {n:'№2 Cube Reaction', r:'2 500 ₽/нед', avail:true},
+                {n:'№3 Specialized Turbo', r:'4 200 ₽/нед', avail:false},
+              ].map((b,i) => (
+                <div key={i} style={{
+                  display:'flex', alignItems:'center', gap:12,
+                  padding:'10px 12px', borderRadius:10,
+                  background: b.hi ? '#F0F2F5' : 'transparent',
+                  opacity: b.avail ? 1 : 0.45,
+                }}>
+                  <div className="wf-thumb wf-thumb--green" style={{width:34, height:34, borderRadius:8}}/>
+                  <div style={{flex:1}}>
+                    <div style={{font:'600 13px/1.2 Inter,sans-serif', color:'#1f2937'}}>{b.n}</div>
+                    <div style={{font:'500 11px/1.2 Inter,sans-serif', color:'var(--wf-label)', marginTop:3}}>{b.r}{!b.avail && ' · занят'}</div>
+                  </div>
+                  {b.hi && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Дата начала</div>
+            <div className="wf-input__value">YYYY-MM-DD</div>
+          </div>
+        </div>
+        <div className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Дата окончания</div>
+            <div className="wf-input__value">не обязательно</div>
+          </div>
+        </div>
+        <WFPin n="1" x={395} y={70} note="Пикер ≠ текстовое поле: тёмная полоска слева + чип-шеврон справа" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Доступ клиента</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Логин клиента</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Пароль клиента</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div style={{display:'flex', gap:8, marginTop:2}}>
+          <div style={{flex:1, height:44, borderRadius:12, background:'#1f2937', color:'#fff', font:'600 13px/44px Inter,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Сгенерировать
+          </div>
+          <div style={{flex:1, height:44, borderRadius:12, background:'#fff', border:'1.5px solid #1f2937', color:'#1f2937', font:'600 13px/40px Inter,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Скопировать
+          </div>
+        </div>
+        <WFPin n="2" x={395} y={460} note="Кнопки общие на пару: «Сгенерировать» создаёт логин+пароль сразу, «Скопировать» копирует оба" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Документы и комментарий</div>
+        {['Ссылка на видео','Ссылка на договор','Комментарий'].map((l,i) => (
+          <div key={i} className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{l}</div>
+              <div className="wf-input__value">не обязательно</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="3" x={395} y={628} note="Опциональный блок: видео, договор, коммент" side="left"/>
+      </div>
+
+      <WFTabBar active="home"/>
+    </WFFrame>
+  );
+}
+window.AdminNewRent = AdminNewRent;
+window.WFDropdown = WFDropdown;
 
 </script>
 
@@ -1776,10 +2164,17 @@ window.AdminNewBike = AdminNewBike;
   mount('screen-popover',    <window.AdminStatusPopover/>);
   mount('screen-detail',     <window.AdminRentDetail/>);
   mount('screen-clients',    <window.AdminAllClients/>);
-  mount('screen-card',       <window.AdminClientCard/>);
+  mount('screen-card',          <window.AdminClientCard active={true}/>);
+  mount('screen-card-inactive', <window.AdminClientCard active={false}/>);
+  mount('screen-card-confirm',  <window.AdminClientCard active={true} confirmDelete={true}/>);
+  mount('screen-card-edit',     <window.AdminEditClient/>);
   mount('screen-newclient',  <window.AdminNewClient/>);
   mount('screen-bikes',      <window.AdminAllBikes/>);
-  mount('screen-newbike',    <window.AdminNewBike/>);
+  mount('screen-newbike',    <window.AdminNewBike hasPhoto={false}/>);
+  mount('screen-newbike-filled', <window.AdminNewBike hasPhoto={true}/>);
+  mount('screen-newrent',          <window.AdminNewRent bikeState="empty"/>);
+  mount('screen-newrent-open',     <window.AdminNewRent bikeState="open"/>);
+  mount('screen-newrent-selected', <window.AdminNewRent bikeState="selected"/>);
 
   const tweaksRoot = document.createElement('div');
   document.body.appendChild(tweaksRoot);
