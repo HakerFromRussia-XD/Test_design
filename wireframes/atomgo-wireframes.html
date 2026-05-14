@@ -1590,11 +1590,33 @@ function AdminAllClients() {
       </div>
       <WFPin n="1" x={395} y={120} note="Поиск по 3 ключам сразу + 2 фильтра" side="left"/>
 
-      <WFPersonRow x={23} y={206} ringColor="green" titleW={140} lines={[120,90]} pill={{kind:'profit', label:'Активн.', value:'1'}}/>
-      <WFPersonRow x={23} y={326} ringColor="yellow" titleW={150} lines={[130,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
-      <WFPersonRow x={23} y={446} ringColor="green" titleW={130} lines={[110,90]} pill={{kind:'profit', label:'Активн.', value:'2'}}/>
-      <WFPersonRow x={23} y={566} ringColor="magenta" titleW={140} lines={[140,80]}/>
-      <WFPin n="2" x={395} y={695} note="«+» в топ-баре → новый клиент (экран 7)" side="left"/>
+      <div className="wf-card" style={{position:'absolute', left:23, top:206, width:368, padding:'4px 14px', boxSizing:'border-box'}}>
+        {[
+          {name:'Иванов Иван Иванович', meta:'№1 Wenbox · до 07 май', debt:'3 500 ₽'},
+          {name:'Петров Пётр Петрович', meta:'№2 Cube · до 14 май', debt:null},
+          {name:'Сидоров Сидор Сидорович', meta:'№3 Wenbox Monster · до 22 май', debt:'8 200 ₽'},
+          {name:'Алексеев Алексей', meta:'Без аренды · последняя 12 мар', debt:null},
+          {name:'Кузнецов Илья Сергеевич', meta:'№4 Specialized · до 30 май', debt:null},
+          {name:'Михайлов Михаил', meta:'Без аренды · последняя 02 янв', debt:null},
+          {name:'Соколов Артём', meta:'№5 Atom · до 12 июн', debt:'1 200 ₽'},
+          {name:'Волков Дмитрий', meta:'Без аренды · последняя 28 фев', debt:null},
+        ].map((c,i,arr) => (
+          <div key={i} style={{
+            padding:'10px 0', display:'flex', alignItems:'center', gap:12,
+            borderBottom: i === arr.length - 1 ? 'none' : '1px solid #ECECEC',
+          }}>
+            <div className="wf-square" style={{width:30, height:30, borderRadius:8, boxShadow: c.debt ? 'inset 0 0 0 2px #FFCC00' : 'inset 0 0 0 2px #34C759'}}/>
+            <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:3}}>
+              <span style={{font:'600 12px/1.1 Inter,sans-serif', color:'var(--wf-stroke)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c.name}</span>
+              <span style={{font:'500 10px/1.1 Inter,sans-serif', color:'var(--wf-label)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c.meta}</span>
+            </div>
+            {c.debt && <span style={{font:'700 12px/1 Inter,sans-serif', color:'#D63034'}}>{c.debt}</span>}
+            <svg width="5" height="9" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
+          </div>
+        ))}
+      </div>
+      <WFPin n="2" x={395} y={210} note="Компактный список (стиль = история аренд). Долг — красным справа, если есть." side="left"/>
+      <WFPin n="3" x={395} y={695} note="«+» в топ-баре → новый клиент (экран 7)" side="left"/>
 
       <WFTabBar active="clients"/>
     </WFFrame>
@@ -1866,40 +1888,50 @@ function BikeRow({ y, ringColor = 'green', titleW = 150 }) {
 }
 
 function AdminAllBikes() {
+  const Row = ({ ring, name, meta, rate, last }) => (
+    <div style={{
+      padding:'10px 0', display:'flex', alignItems:'center', gap:12,
+      borderBottom: last ? 'none' : '1px solid #ECECEC',
+    }}>
+      <div className="wf-square" style={{width:30, height:30, borderRadius:8, boxShadow:`inset 0 0 0 2px ${ring}`}}/>
+      <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:3}}>
+        <span style={{font:'600 12px/1.1 Inter,sans-serif', color:'var(--wf-stroke)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{name}</span>
+        <span style={{font:'500 10px/1.1 Inter,sans-serif', color:'var(--wf-label)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{meta}</span>
+      </div>
+      <span style={{font:'700 12px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>{rate}</span>
+      <svg width="5" height="9" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
+    </div>
+  );
   return (
     <WFFrame screenLabel="08 Admin · Все велосипеды">
       <WFTopBar title="Велосипеды" leading="logout" trailing="plus"/>
 
-      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', gap:8}}>
-        <div className="wf-stat" style={{flex:1}}>
-          <div className="wf-stat__label">Свободны</div>
-          <div className="wf-stat__value">5</div>
+      {/* Search + filter chips (стиль = экран 05) */}
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:10}}>
+        <div className="wf-search">
+          <div className="wf-search__icon"/>
+          <span>Поиск: модель, SN, арендатор</span>
         </div>
-        <div className="wf-stat" style={{flex:1}}>
-          <div className="wf-stat__label">В аренде</div>
-          <div className="wf-stat__value wf-stat__value--profit">12</div>
-        </div>
-        <div className="wf-stat" style={{flex:1}}>
-          <div className="wf-stat__label">Всего</div>
-          <div className="wf-stat__value">17</div>
+        <div style={{display:'flex', gap:8}}>
+          <div className="wf-chip wf-chip--active">Все<span className="wf-chip__count">17</span></div>
+          <div className="wf-chip">В аренде<span className="wf-chip__count">12</span></div>
+          <div className="wf-chip">У меня<span className="wf-chip__count">5</span></div>
         </div>
       </div>
+      <WFPin n="1" x={395} y={120} note="Поиск + фильтры «Все / В аренде / У меня»" side="left"/>
 
-      {/* Group: Свободные */}
-      <div style={{position:'absolute', left:23, top:194, width:368}} className="wf-section-head">
-        <span>Свободные · 5</span><span style={{font:'500 11px Inter,sans-serif', color:'var(--wf-label)'}}>сорт.</span>
+      {/* Unified list */}
+      <div className="wf-card" style={{position:'absolute', left:23, top:206, width:368, padding:'4px 14px', boxSizing:'border-box'}}>
+        <Row ring="#FFCC00" name="№1 Wenbox Monster" meta="Иванов · до 07 май" rate="3 000 ₽/нед"/>
+        <Row ring="#FFCC00" name="№2 Cube Reaction" meta="Петров · до 14 май" rate="2 500 ₽/нед"/>
+        <Row ring="#CB30E0" name="№3 Specialized Turbo" meta="Сидоров · вернут в течении нед." rate="4 200 ₽/нед"/>
+        <Row ring="#34C759" name="№4 Atom Lite" meta="Кузнецов · долгосрочно" rate="2 100 ₽/нед"/>
+        <Row ring="#34C759" name="№5 Atom V8" meta="Соколов · до 12 июн" rate="2 800 ₽/нед"/>
+        <Row ring="#34C759" name="№8 Atom V8 Pro" meta="SN AT-08-2841 · свободен" rate="2 800 ₽/нед"/>
+        <Row ring="#34C759" name="№9 Cube Reaction" meta="SN CB-09-1102 · свободен" rate="2 500 ₽/нед"/>
+        <Row ring="#34C759" name="№10 Trek Marlin" meta="SN TR-10-7765 · свободен" rate="2 200 ₽/нед" last/>
       </div>
-      <BikeRow y={216} ringColor="green"/>
-      <BikeRow y={326} ringColor="green" titleW={130}/>
-      <WFPin n="1" x={395} y={216} note="Группировка: свободные / в аренде" side="left"/>
-
-      {/* Group: В аренде */}
-      <div style={{position:'absolute', left:23, top:436, width:368}} className="wf-section-head">
-        <span>В аренде · 12</span>
-      </div>
-      <BikeRow y={458} ringColor="yellow"/>
-      <BikeRow y={568} ringColor="magenta" titleW={140}/>
-      <WFPin n="2" x={5} y={458} note="Карточка велика: фото с рамкой статуса, модель, SN, ставка / арендатор" side="right"/>
+      <WFPin n="2" x={395} y={210} note="Единый список. Цвет рамки = статус (зел/жёлт/фиол)" side="left"/>
 
       <WFTabBar active="bikes"/>
     </WFFrame>
