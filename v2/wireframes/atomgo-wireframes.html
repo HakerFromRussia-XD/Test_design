@@ -1,0 +1,2287 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AtomGo · Wireframes</title>
+<style>
+/* AtomGo Design System — Colors & Typography
+ * Source of truth: Figma "AtomGo.fig" + docs/07_ui_direction_from_refs.md
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Brand fonts uploaded by the user. Used directly when present, otherwise
+ * we fall back to the @import'd Google Fonts above. */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('fonts/sf_pro_display_light.otf') format('opentype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('fonts/sf_pro_text_bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/font_inter_semi_bold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  /* === Surfaces === */
+  --bg-app: #F7F8FA;          /* rgb(247,248,250) — primary screen background */
+  --bg-card: #FAFBFB;          /* rgb(250,251,251) — list/card surface */
+  --bg-card-2: #FCFCFD;        /* rgb(252,252,253) — tabbar / floating */
+  --bg-white: #FFFFFF;
+  --bg-input-icon: #EAEAF0;    /* rgb(234,234,240) — icon backplate inside cards */
+
+  /* === Text === */
+  --fg-primary: #111827;        /* rgb(17,24,39) — body / titles */
+  --fg-strong: #141718;          /* rgb(20,23,24) — top-bar titles */
+  --fg-darkest: #141416;         /* rgb(20,20,22) — active tab + accent */
+  --fg-muted: rgba(17,24,39,0.5);/* secondary copy in cards */
+  --fg-placeholder: #C2C3CB;     /* rgb(194,195,203) — input placeholder */
+  --fg-icon: #9E9E9E;            /* rgb(158,158,158) — inactive icons + ghost lines */
+  --fg-icon-2: #A7A7AB;          /* rgb(167,167,171) — chevron */
+  --fg-on-color: #FFFFFF;
+
+  /* === Brand / Status === */
+  --brand-blue: #163580;         /* rgb(22,53,128) — accent (logo + primary highlight) */
+  --debt-red: #D63034;            /* rgb(214,48,52) — debt pill */
+  --debt-red-strong: #FF453A;     /* rgb(255,69,58) — debt text emphasis */
+  --profit-green: #238F47;        /* rgb(35,143,71) — profit pill */
+  --status-green: #34C759;        /* rgb(52,199,89) — active rental ring */
+  --status-yellow: #FFCC00;       /* rgb(255,204,0) — warning ring */
+  --status-magenta: #CB30E0;      /* rgb(203,48,224) — inactive ring */
+  --eco-green: #08A74E;           /* per docs/07_ui_direction */
+  --warn-orange: #E28A00;         /* per docs/07_ui_direction */
+
+  /* === Borders / Dividers === */
+  --border-light: #DADADA;        /* rgb(218,218,218) — tabbar 1px hairline */
+  --divider: #EDEDED;             /* per docs/07 — list dividers */
+
+  /* === Shadows === */
+  --shadow-card: 0 20px 30px rgba(25,28,50,0.10);     /* rgba(25,28,50,0.1) — list cards */
+  --shadow-float: 5.92px 11.84px 23.68px rgba(211,209,216,0.30); /* logout button */
+
+  /* === Radii === */
+  --radius-pill: 999px;
+  --radius-screen: 18px;
+  --radius-card: 15px;
+  --radius-input: 12.84px;
+  --radius-button: 16px;
+
+  /* === Spacing scale (4-pt) === */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+
+  /* === Type families ===
+   * SF Pro Display is system-only on Apple devices. We substitute the
+   * nearest Google Font (Inter) for non-Apple platforms. Urbanist + Poppins
+   * are used verbatim from Google Fonts.
+   */
+  --font-display: 'Urbanist', 'Inter', -apple-system, system-ui, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-form: 'Poppins', 'Inter', system-ui, sans-serif;
+
+  /* === Type scale === */
+  --t-hero: 700 40px/1.6 var(--font-display);   /* "Welcome to AtomGo" */
+  --t-h1: 700 22px/34.88px var(--font-ui);       /* Top bar titles */
+  --t-h2: 700 18px/24px var(--font-ui);
+  --t-card-title: 700 15px/100% var(--font-ui);  /* Person card name */
+  --t-card-sub: 700 12px/100% var(--font-ui);    /* Person card subtitle */
+  --t-pill: 700 15px/20px var(--font-ui);        /* Долг / Прибыль */
+  --t-input: 500 14px/100% var(--font-form);     /* Form labels & placeholders, -2% tracking */
+  --t-button: 500 15px/23px var(--font-form);    /* CTA "Get started", +3% tracking */
+  --t-mono-money: 700 15px/20px var(--font-ui);
+}
+
+/* === Semantic helpers === */
+body { background: var(--bg-app); color: var(--fg-primary); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.h1 { font: var(--t-h1); color: var(--fg-strong); }
+.h2 { font: var(--t-h2); color: var(--fg-primary); }
+.hero { font: var(--t-hero); color: #212121; text-align: center; }
+.card-title { font: var(--t-card-title); color: var(--fg-primary); }
+.card-sub { font: var(--t-card-sub); color: var(--fg-muted); }
+.pill-text { font: var(--t-pill); color: var(--fg-on-color); }
+.input-text { font: var(--t-input); letter-spacing: -0.02em; }
+.button-text { font: var(--t-button); letter-spacing: 0.03em; }
+
+/* Wireframe-specific tokens layered on top of AtomGo design tokens. */
+:root {
+  --wf-stroke: #1f2937;
+  --wf-stroke-soft: #98a1ad;
+  --wf-fill-1: #eef0f3;
+  --wf-fill-2: #e3e6eb;
+  --wf-fill-3: #d3d7dd;
+  --wf-fill-text: #c9ccd2;
+  --wf-canvas: #f0f1f4;
+  --wf-section-bg: #ffffff;
+  --wf-label: #6b7280;
+}
+
+/* Screen frame styling shared across every wireframe screen */
+.wf-frame {
+  position: relative;
+  width: 414px;
+  height: 896px;
+  background: #ffffff;
+  border-radius: 32px;
+  border: 1.5px solid var(--wf-stroke);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wf-frame--app { background: #F7F8FA; }
+
+.wf-screen-label {
+  font: 600 13px/1.3 'Inter', system-ui, sans-serif;
+  color: var(--wf-label);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-top: 14px;
+}
+
+.wf-screen-num {
+  display: inline-block;
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--wf-stroke);
+  border-radius: 50%;
+  text-align: center;
+  font: 700 12px/20px 'Inter', system-ui, sans-serif;
+  color: var(--wf-stroke);
+  margin-right: 8px;
+  background: #fff;
+  vertical-align: middle;
+}
+
+.wf-screen-title {
+  font: 700 17px/1.3 'Inter', system-ui, sans-serif;
+  color: var(--wf-stroke);
+  letter-spacing: -0.01em;
+}
+
+.wf-screen-caption {
+  font: 400 13px/1.45 'Inter', system-ui, sans-serif;
+  color: var(--wf-label);
+  max-width: 380px;
+  margin-top: 6px;
+}
+
+/* === Generic wireframe atoms === */
+.wf-bar { background: var(--wf-fill-2); border-radius: 4px; }
+.wf-block { background: var(--wf-fill-1); border-radius: 8px; }
+.wf-block--strong { background: var(--wf-fill-3); }
+.wf-circle { border-radius: 50%; background: var(--wf-fill-2); }
+.wf-square { background: var(--wf-fill-2); border-radius: 12px; position: relative; }
+.wf-square::before, .wf-square::after {
+  content: ''; position: absolute; inset: 0;
+  border: 1px dashed var(--wf-stroke-soft); border-radius: inherit;
+}
+.wf-square::after {
+  background: linear-gradient(135deg, transparent calc(50% - 0.5px), var(--wf-stroke-soft) 50%, transparent calc(50% + 0.5px)),
+              linear-gradient(45deg, transparent calc(50% - 0.5px), var(--wf-stroke-soft) 50%, transparent calc(50% + 0.5px));
+  opacity: 0.55;
+}
+
+/* Top bar shell */
+.wf-topbar {
+  position: absolute; left: 23px; right: 23px; top: 41px; height: 45px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.wf-topbar__btn {
+  width: 45px; height: 45px; border-radius: 14px;
+  background: #fff; border: 1.5px solid var(--wf-stroke);
+  display: flex; align-items: center; justify-content: center;
+}
+.wf-topbar__btn--ghost { background: rgba(255,255,255,0.6); border-style: dashed; }
+.wf-topbar__title {
+  font: 700 18px/1 'Inter', system-ui, sans-serif;
+  color: var(--wf-stroke);
+}
+.wf-topbar__spacer { width: 45px; height: 45px; }
+
+/* Tabbar */
+.wf-tabbar {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 86px;
+  background: rgba(252,252,253,0.85);
+  border-top: 1.2px solid #DADADA;
+  display: flex; align-items: flex-start; justify-content: space-around;
+  padding: 19px 80px 0;
+}
+.wf-tabbar__btn {
+  width: 30px; height: 30px;
+  border: 1.5px solid var(--wf-stroke); border-radius: 8px;
+  background: #fff;
+  position: relative;
+}
+.wf-tabbar__btn--active { background: var(--wf-stroke); }
+.wf-tabbar__btn--active::after {
+  content: ''; position: absolute; left: 50%; top: 36px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--wf-stroke); transform: translateX(-50%);
+}
+
+/* Card */
+.wf-card {
+  background: #FAFBFB; border-radius: 15px;
+  box-shadow: 0 20px 30px rgba(25,28,50,0.08);
+  position: relative;
+  border: 1px solid #ececef;
+}
+
+/* Pill (status colored block) */
+.wf-pill {
+  border-radius: 15px; padding: 8px 14px;
+  font: 700 12px/1.1 'Inter', system-ui, sans-serif;
+  color: #fff;
+  display: inline-flex; flex-direction: column; align-items: center;
+  min-width: 80px;
+}
+.wf-pill__label { font-size: 11px; opacity: .85; font-weight: 600; }
+.wf-pill__value { font-size: 14px; margin-top: 2px; }
+.wf-pill--debt { background: #D63034; }
+.wf-pill--profit { background: #238F47; }
+.wf-pill--neutral { background: #141718; }
+
+/* Status ring (around bike thumb) */
+.wf-thumb {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--wf-fill-2);
+  position: relative;
+  flex-shrink: 0;
+}
+.wf-thumb--green { box-shadow: inset 0 0 0 3px #34C759; }
+.wf-thumb--yellow { box-shadow: inset 0 0 0 3px #FFCC00; }
+.wf-thumb--magenta { box-shadow: inset 0 0 0 3px #CB30E0; }
+
+/* Filter chips */
+.wf-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 14px; border-radius: 999px;
+  background: #fff; border: 1.5px solid var(--wf-stroke);
+  font: 600 12px/1 'Inter', system-ui, sans-serif;
+  color: var(--wf-stroke);
+}
+.wf-chip--active { background: var(--wf-stroke); color: #fff; }
+.wf-chip--soft { border-style: dashed; border-color: var(--wf-stroke-soft); color: var(--wf-stroke-soft); }
+.wf-chip__count {
+  background: rgba(0,0,0,0.08); padding: 2px 6px; border-radius: 999px;
+  font-size: 10px;
+}
+.wf-chip--active .wf-chip__count { background: rgba(255,255,255,0.2); }
+
+/* Search bar */
+.wf-search {
+  height: 44px; border-radius: 12.84px; background: #fff;
+  border: 1.5px solid var(--wf-stroke);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px;
+  font: 500 13px/1 'Inter', system-ui, sans-serif;
+  color: var(--wf-fill-text);
+}
+.wf-search__icon {
+  width: 14px; height: 14px; border: 1.5px solid var(--wf-stroke); border-radius: 50%;
+  position: relative;
+}
+.wf-search__icon::after {
+  content: ''; position: absolute; right: -5px; bottom: -5px;
+  width: 6px; height: 1.5px; background: var(--wf-stroke); transform: rotate(45deg);
+}
+
+/* Form input */
+.wf-input {
+  height: 56px; border-radius: 12.84px; background: #fff;
+  border: 1.5px solid var(--wf-stroke);
+  display: flex; align-items: center; gap: 10px; padding: 0 18px;
+}
+.wf-input__label {
+  font: 500 11px/1 'Inter', system-ui, sans-serif;
+  color: var(--wf-label);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.wf-input__value {
+  font: 500 13px/1 'Inter', system-ui, sans-serif;
+  color: var(--wf-fill-text);
+}
+
+/* Button */
+.wf-btn {
+  height: 50px; border-radius: 16px;
+  background: var(--wf-stroke); color: #fff;
+  font: 600 14px/1 'Inter', system-ui, sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 0.02em;
+}
+.wf-btn--ghost { background: #fff; color: var(--wf-stroke); border: 1.5px solid var(--wf-stroke); }
+.wf-btn--danger { background: #D63034; color: #fff; }
+.wf-btn--soft { background: #fff; color: var(--wf-stroke); border: 1.5px dashed var(--wf-stroke-soft); }
+
+/* Annotation pin (for design comments) */
+.wf-pin {
+  position: absolute;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #163580; color: #fff;
+  font: 700 11px/24px 'Inter', sans-serif; text-align: center;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 8px rgba(22,53,128,0.3);
+  z-index: 50;
+}
+
+/* Bottom sheet (overlay) */
+.wf-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  border-top: 1.5px solid var(--wf-stroke);
+  padding: 14px 23px 30px;
+  box-shadow: 0 -10px 30px rgba(25,28,50,0.12);
+}
+.wf-sheet__handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--wf-fill-3);
+  margin: 0 auto 12px;
+}
+
+/* Tiny popover (status switcher) */
+.wf-popover {
+  position: absolute;
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid var(--wf-stroke);
+  box-shadow: 0 12px 28px rgba(25,28,50,0.18);
+  padding: 6px;
+  z-index: 30;
+  min-width: 200px;
+}
+.wf-popover__row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px;
+  font: 600 13px/1 'Inter', sans-serif;
+  color: var(--wf-stroke);
+  border-radius: 8px;
+}
+.wf-popover__row + .wf-popover__row { border-top: 1px dashed #e3e6eb; }
+.wf-popover__dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 3px solid #34C759;
+}
+
+/* Section header inside lists */
+.wf-section-head {
+  font: 700 11px/1 'Inter', sans-serif;
+  color: var(--wf-label);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Stat card (dashboard tiles) */
+.wf-stat {
+  background: #fff; border: 1.5px solid var(--wf-stroke);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.wf-stat__label {
+  font: 600 10px/1.1 'Inter', sans-serif;
+  color: var(--wf-label);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.wf-stat__value {
+  font: 800 18px/1.1 'Inter', sans-serif;
+  color: var(--wf-stroke);
+  letter-spacing: -0.02em;
+}
+.wf-stat__value--debt { color: #D63034; }
+.wf-stat__value--profit { color: #238F47; }
+
+
+  html, body { margin:0; padding:0; background: var(--wf-canvas); min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; color: var(--wf-stroke); }
+
+  .wf-doc-head { max-width: 1280px; margin: 0 auto; padding: 48px 32px 16px; }
+  .wf-doc-head h1 { font: 800 28px/1.2 'Inter', sans-serif; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .wf-doc-head .sub { font: 400 14px/1.5 'Inter', sans-serif; color: var(--wf-label); max-width: 720px; }
+  .wf-doc-head .meta { display:flex; gap: 24px; margin-top: 16px; font: 500 12px/1 'Inter', sans-serif; color: var(--wf-label); }
+  .wf-doc-head .meta b { color: var(--wf-stroke); font-weight: 700; }
+
+  .wf-row-group { max-width: 1640px; margin: 0 auto; padding: 32px 32px 64px; }
+  .wf-row-group__head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; }
+  .wf-row-group__head h2 { font: 800 18px/1 'Inter', sans-serif; margin: 0; letter-spacing: -0.01em; }
+  .wf-row-group__head .count { font: 500 13px/1 'Inter', sans-serif; color: var(--wf-label); }
+  .wf-row-group__head .pipe { flex: 1; height: 1px; background: var(--wf-fill-2); }
+
+  .wf-row { display: flex; gap: 32px; overflow-x: auto; padding: 8px 4px 32px; scroll-snap-type: x proximity; }
+  .wf-cell { flex: 0 0 auto; scroll-snap-align: start; display: flex; flex-direction: column; align-items: flex-start; width: 414px; }
+
+  .wf-row.compact .wf-frame { transform: scale(0.7); transform-origin: top left; }
+  .wf-row.compact .wf-cell { width: 290px; height: 660px; }
+  .wf-row.tiny .wf-frame { transform: scale(0.45); transform-origin: top left; }
+  .wf-row.tiny .wf-cell { width: 186px; height: 425px; }
+
+  .wf-spec { max-width: 1080px; margin: 32px auto 80px; padding: 28px 32px; background: #fff; border: 1.5px solid var(--wf-stroke); border-radius: 16px; }
+  .wf-spec h3 { font: 800 16px/1.2 Inter,sans-serif; margin:0 0 12px; }
+  .wf-spec ul { margin: 0; padding: 0 0 0 18px; font: 400 13px/1.6 Inter,sans-serif; color: #1f2937; }
+
+  .wf-pipeline-bar { display:flex; align-items:center; gap: 10px; padding: 8px 12px; background: #fff; border: 1.5px solid var(--wf-stroke); border-radius: 10px; font: 600 12px/1 Inter,sans-serif; }
+  .wf-pipeline-bar .dot { width:10px; height:10px; border-radius:50%; background:#163580; }
+  .wf-pipeline-bar.admin .dot { background: #1f2937; }
+</style>
+</head>
+<body>
+
+<div class="wf-doc-head">
+  <h1>AtomGo · Wireframes</h1>
+  <div class="sub">Средне-точные вайрфреймы (414×896, iOS) для двух пайплайнов: клиент и админ. Дизайн-система AtomGo задаёт цвета статусов, форму карточек и тени; вайрфреймы серые — раскраска и иконография придут на этапе hi-fi.</div>
+  <div class="meta">
+    <span><b>Экранов:</b> 9 (1 клиент + 8 админ)</span>
+    <span><b>Сетка:</b> 414×896 iPhone 11 Pro Max</span>
+    <span><b>Подсказки:</b> синие пины с пояснениями</span>
+  </div>
+</div>
+
+<div class="wf-row-group">
+  <div class="wf-row-group__head">
+    <div class="wf-pipeline-bar"><span class="dot"></span>Клиентский пайплайн</div>
+    <h2 style="margin-left:4px">Один экран — аренда + оплата</h2>
+    <span class="count">1 экран</span>
+    <div class="pipe"></div>
+  </div>
+  <div class="wf-row" id="row-client">
+    <div class="wf-cell">
+      <div id="screen-client"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">01</span><span class="wf-screen-title">Моя аренда</span></div>
+      <div class="wf-screen-caption">Велосипед, оплачено до, ставка → красная плашка долга → шторка снизу с тарифами «1 день / 1 неделя / 2 недели / 1 месяц / весь долг»</div>
+    </div>
+  </div>
+</div>
+
+<div class="wf-row-group">
+  <div class="wf-row-group__head">
+    <div class="wf-pipeline-bar admin"><span class="dot"></span>Админский пайплайн</div>
+    <h2 style="margin-left:4px">Дашборд аренд → детали → клиенты → велосипеды</h2>
+    <span class="count">8 экранов</span>
+    <div class="pipe"></div>
+  </div>
+  <div class="wf-row" id="row-admin">
+    <div class="wf-cell"><div id="screen-rents"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">02</span><span class="wf-screen-title">Все аренды (дашборд)</span></div>
+      <div class="wf-screen-caption">Сводка сверху + поиск + чипы статусов + список аренд. Цвет рамки иконки = статус (зелёный/жёлтый/фиолетовый).</div>
+    </div>
+    <div class="wf-cell"><div id="screen-popover"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">03</span><span class="wf-screen-title">Смена статуса</span></div>
+      <div class="wf-screen-caption">Поп-овер тапом по иконке: «Долгосрочная / Вернут в течении недели / Велосипед у меня».</div>
+    </div>
+    <div class="wf-cell"><div id="screen-detail"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">04</span><span class="wf-screen-title">Детали аренды</span></div>
+      <div class="wf-screen-caption">Велосипед, арендатор → карточка клиента, журнал CHARGE/PAYMENT/ADJUSTMENT, корректировка и завершение.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-adjust"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">04b</span><span class="wf-screen-title">Корректировка долга</span></div>
+      <div class="wf-screen-caption">Клиент + текущий долг, сегмент-переключатель «Уменьшить / Увеличить долг», сумма и комментарий.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-clients"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">05</span><span class="wf-screen-title">Все клиенты</span></div>
+      <div class="wf-screen-caption">Поиск по ФИО / телефону / паспорту, фильтры «Должники» и «Активные», группировка по букве.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06</span><span class="wf-screen-title">Карточка · Активный</span></div>
+      <div class="wf-screen-caption">Велосипед в шапке + финансы (4 числа) + Профиль с «Удалить» + История аренд.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-inactive"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06b</span><span class="wf-screen-title">Карточка · Неактивный</span></div>
+      <div class="wf-screen-caption">Без блока велосипеда — компактная шапка с ФИО и статусом «Неактивный».</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-confirm"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06c</span><span class="wf-screen-title">Удаление клиента</span></div>
+      <div class="wf-screen-caption">Диалог подтверждения по тапу на «Удалить клиента».</div>
+    </div>
+    <div class="wf-cell"><div id="screen-card-edit"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">06d</span><span class="wf-screen-title">Редактирование клиента</span></div>
+      <div class="wf-screen-caption">Те же поля, что в «Новом клиенте», заполнены текущими данными + «Удалить клиента» внизу.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newclient"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">07</span><span class="wf-screen-title">Новый клиент</span></div>
+      <div class="wf-screen-caption">Обязательные: ФИО, телефон, паспорт, адрес, логин/пароль (генерация). Опционально: видео, договор, коммент.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-bikes"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">08</span><span class="wf-screen-title">Все велосипеды</span></div>
+      <div class="wf-screen-caption">Сводка + группировка «Свободные / В аренде». Карточка показывает фото, модель, SN, ставку.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newbike"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">09a</span><span class="wf-screen-title">Новый велосипед — пусто</span></div>
+      <div class="wf-screen-caption">Слот фото пустой: пунктирная рамка, иконка фото, подпись «Загрузить фото» и «+» в углу — явная точка тапа.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newbike-filled"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">09b</span><span class="wf-screen-title">Новый велосипед — с фото</span></div>
+      <div class="wf-screen-caption">Фото загружено: чип «Изменить» в углу + полоса «Сменить фото» снизу + красная иконка удаления — пользователь точно видит где менять.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10a</span><span class="wf-screen-title">Новая аренда — пусто</span></div>
+      <div class="wf-screen-caption">Дропдаун в состоянии «не выбрано»: тёмная полоска слева, серая подпись, чип-шеврон вниз.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent-open"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10b</span><span class="wf-screen-title">Новая аренда — открыто</span></div>
+      <div class="wf-screen-caption">Дропдаун раскрыт: подсветка поля, шеврон-чип становится тёмным и переворачивается, попап со списком.</div>
+    </div>
+    <div class="wf-cell"><div id="screen-newrent-selected"></div>
+      <div class="wf-screen-label"><span class="wf-screen-num">10c</span><span class="wf-screen-title">Новая аренда — выбрано</span></div>
+      <div class="wf-screen-caption">Дропдаун со значением: жирный текст, чёрная полоска слева во всю высоту, чип-шеврон серый.</div>
+    </div>
+  </div>
+</div>
+
+<div class="wf-spec">
+  <h3>Допущения и заметки</h3>
+  <ul>
+    <li><b>Один холст, 9 фреймов.</b> Каждый ряд можно прокручивать горизонтально. Tweaks-панель (тогл в тулбаре) меняет плотность и переключает подсказки.</li>
+    <li><b>Tab-bar 4 секции:</b> Дом (аренды) · Велосипеды · Клиенты · Настройки.</li>
+    <li><b>Поиск клиентов:</b> один инпут ищет по ФИО, телефону и паспорту одновременно. Фильтры «Должники / Активные» — чипы под поиском.</li>
+    <li><b>Статус аренды</b> — 3 цветные рамки вокруг фото велика; поп-овер для смены — экран 03.</li>
+    <li><b>Журнал</b> — линейный список с тегом типа (CHARGE/PAYMENT/ADJUSTMENT), знаковой суммой и датой.</li>
+  </ul>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  // Auto-inject a rail toggle when a <deck-stage> is on the page. The
+  // toggle drives the deck's per-viewer _railVisible via window message;
+  // state is mirrored from the same localStorage key the deck reads so
+  // the control reflects reality across reloads. The mechanism is the
+  // message — authors who want custom placement can post it directly
+  // and pass noDeckControls to suppress this one.
+  const hasDeckStage = React.useMemo(
+    () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    [],
+  );
+  // Hide the toggle until the host has actually enabled the rail (the
+  // __omelette_rail_enabled window message, posted only when the
+  // omelette_deck_rail_enabled flag is on for this user). The initial read
+  // covers TweaksPanel mounting after the message already arrived; the
+  // listener covers the common case of mounting first.
+  const [railEnabled, setRailEnabled] = React.useState(
+    () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled,
+  );
+  React.useEffect(() => {
+    if (!hasDeckStage || railEnabled) return undefined;
+    const onMsg = (e) => {
+      if (e.data && e.data.type === '__omelette_rail_enabled') setRailEnabled(true);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [hasDeckStage, railEnabled]);
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try { return localStorage.getItem('deck-stage.railVisible') !== '0'; } catch (e) { return true; }
+  });
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+          {hasDeckStage && railEnabled && !noDeckControls && (
+            <TweakSection label="Deck">
+              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+            </TweakSection>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+</script>
+
+<script type="text/babel">
+// Shared wireframe primitives. Loaded once, used by every screen file.
+
+const { useState, useEffect } = React;
+
+function WFFrame({ children, app = true, screenLabel }) {
+  return (
+    <div className={`wf-frame ${app ? 'wf-frame--app' : ''}`} data-screen-label={screenLabel}>
+      {children}
+    </div>
+  );
+}
+
+function WFTopBar({ title, leading = 'menu', trailing = 'menu' }) {
+  const renderBtn = (kind) => {
+    if (kind === 'none') return <div className="wf-topbar__spacer"/>;
+    if (kind === 'back') {
+      return (
+        <div className="wf-topbar__btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+      );
+    }
+    if (kind === 'logout') {
+      return (
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </div>
+      );
+    }
+    if (kind === 'plus') {
+      return (
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.4" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      );
+    }
+    if (kind === 'check') {
+      return (
+        <div className="wf-topbar__btn" style={{background:'#1f2937'}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      );
+    }
+    if (kind === 'edit') {
+      return (
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+      );
+    }
+    // menu (•••)
+    return (
+      <div className="wf-topbar__btn wf-topbar__btn--ghost">
+        <div style={{display:'flex', gap:3}}>
+          <i style={{width:4,height:4,borderRadius:'50%',background:'#1f2937'}}/>
+          <i style={{width:4,height:4,borderRadius:'50%',background:'#1f2937'}}/>
+          <i style={{width:4,height:4,borderRadius:'50%',background:'#1f2937'}}/>
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div className="wf-topbar">
+      {renderBtn(leading)}
+      <div className="wf-topbar__title">{title}</div>
+      {renderBtn(trailing)}
+    </div>
+  );
+}
+
+function WFTabBar({ active = 'home' }) {
+  return (
+    <div className="wf-tabbar">
+      <div className={`wf-tabbar__btn ${active === 'home' ? 'wf-tabbar__btn--active' : ''}`}/>
+      <div className={`wf-tabbar__btn ${active === 'bikes' ? 'wf-tabbar__btn--active' : ''}`}/>
+      <div className={`wf-tabbar__btn ${active === 'clients' ? 'wf-tabbar__btn--active' : ''}`}/>
+      <div className={`wf-tabbar__btn ${active === 'settings' ? 'wf-tabbar__btn--active' : ''}`}/>
+    </div>
+  );
+}
+
+// Annotation pin with optional caption to the side.
+function WFPin({ n, x, y, note, side = 'right' }) {
+  return (
+    <div className="wf-pin" style={{ left: x, top: y }}>
+      {n}
+      {note && (
+        <div style={{
+          position:'absolute', top: -2,
+          [side === 'right' ? 'left' : 'right']: 32,
+          width: 180, padding: '6px 10px',
+          background: '#fff', borderRadius: 8,
+          border: '1px solid #163580',
+          font: '500 11px/1.35 Inter, sans-serif',
+          color: '#1f2937', textAlign: 'left',
+        }}>{note}</div>
+      )}
+    </div>
+  );
+}
+
+// Greybox text bar — width × height with optional opacity tier
+function WFText({ w, h = 10, tier = 1, style = {}, className = '' }) {
+  const bg = tier === 1 ? 'var(--wf-fill-1)'
+           : tier === 2 ? 'var(--wf-fill-2)'
+           : 'var(--wf-fill-3)';
+  return <div className={`wf-bar ${className}`} style={{ width: w, height: h, background: bg, ...style }}/>;
+}
+
+// Person row (used in lists) — thumb + 3 text lines + optional pill on right
+function WFPersonRow({ ringColor = 'green', titleW = 140, lines = [120, 90], pill, x = 23, y = 0, onClickStatus }) {
+  return (
+    <div className="wf-card" style={{
+      position:'absolute', left: x, top: y, width: 368, height: 110,
+      padding: '21px 14px 21px 18px',
+      boxSizing: 'border-box',
+      display: 'flex', alignItems: 'center', gap: 16,
+    }}>
+      <div className={`wf-thumb wf-thumb--${ringColor}`} onClick={onClickStatus}/>
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8}}>
+        <WFText w={titleW} h={13} tier={3}/>
+        {lines.map((lw, i) => <WFText key={i} w={lw} h={10} tier={1}/>)}
+      </div>
+      {pill && (
+        <div className={`wf-pill wf-pill--${pill.kind}`}>
+          <div className="wf-pill__label">{pill.label}</div>
+          <div className="wf-pill__value">{pill.value}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+window.WF = { WFFrame, WFTopBar, WFTabBar, WFPin, WFText, WFPersonRow };
+
+</script>
+
+<script type="text/babel">
+// Screen 1 — CLIENT (single screen + payment sheet)
+
+function ClientRental({ sheetOpen = true }) {
+  return (
+    <WFFrame screenLabel="01 Client · Текущая аренда">
+      <WFTopBar title="Моя аренда" leading="logout" trailing="menu"/>
+
+      {/* Bike hero card */}
+      <div className="wf-card" style={{ position:'absolute', left:23, top:102, width:368, padding:'20px 22px', boxSizing:'border-box', display:'flex', flexDirection:'column', gap:16 }}>
+        <div style={{display:'flex', gap:16, alignItems:'center'}}>
+          <div className="wf-square" style={{width:84, height:84, borderRadius:18, flexShrink:0}}/>
+          <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}>
+            <div style={{font:'500 11px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>№1</div>
+            <div style={{font:'700 16px/1.2 Inter,sans-serif', color:'var(--wf-stroke)'}}>Wenbox Monster</div>
+            <div style={{font:'500 12px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>3 000 ₽/нед</div>
+          </div>
+        </div>
+        <div style={{height:1, background:'#EDEDED'}}/>
+        <div style={{display:'flex', justifyContent:'space-between', gap:6}}>
+          {[['Долг','4 280 ₽','#D63034'],['Коррект.','0 ₽','#1f2937'],['Оплач. до','07 май 2026','#1f2937']].map((f,i)=>(
+            <div key={i} style={{display:'flex', flexDirection:'column', gap:3, minWidth:0}}>
+              <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.04em'}}>{f[0]}</div>
+              <div style={{font:'700 13px/1 Inter,sans-serif', color:f[2]}}>{f[1]}</div>
+            </div>
+          ))}
+        </div>
+        <WFPin n="A" x={-12} y={-12} note="Велосипед + финансовый блок (4 числа), как в шапке 06" side="right"/>
+      </div>
+
+      {/* Quick-pay open trigger */}
+      <div style={{position:'absolute', left:23, top:306, width:368, display:'flex', flexDirection:'column', gap:14}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.08em', color:'var(--wf-label)'}}>Быстрая оплата</div>
+        <div className="wf-btn wf-btn--danger" style={{width:'100%'}}>Оплатить весь долг · 4 280 ₽</div>
+        <div className="wf-btn" style={{width:'100%'}}>Выбрать тариф ↑</div>
+        <div style={{font:'400 12px/1.45 Inter,sans-serif', color:'var(--wf-label)', textAlign:'center'}}>
+          Тап → шторка снизу с тарифами<br/>(на этом экране открыта по умолчанию)
+        </div>
+        <WFPin n="B" x={395} y={20} note="Долг → красная кнопка наверху; тарифы — в шторке" side="left"/>
+      </div>
+
+      {/* Bottom sheet — payment options */}
+      {sheetOpen && (
+        <div className="wf-sheet" style={{height: 384, bottom: -26}}>
+          <div className="wf-sheet__handle"/>
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14}}>
+            <div style={{font:'700 16px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>Оплата аренды</div>
+            <div style={{font:'500 12px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Закрыть ✕</div>
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+            {[
+              {label:'1 день', price:'580 ₽', icon:(
+                /* sun rising over horizon */
+                <svg width="90" height="90" viewBox="0 0 90 90" fill="none" stroke="#C9CBD0" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="55" cy="60" r="20" fill="#E2E4E8" stroke="none"/>
+                  <line x1="55" y1="22" x2="55" y2="32"/>
+                  <line x1="25" y1="60" x2="33" y2="60"/>
+                  <line x1="77" y1="60" x2="85" y2="60"/>
+                  <line x1="32" y1="38" x2="38" y2="44"/>
+                  <line x1="78" y1="38" x2="72" y2="44"/>
+                </svg>
+              )},
+              {label:'1 неделя', price:'4 000 ₽', icon:(
+                /* calendar week */
+                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <rect x="20" y="28" width="64" height="56" rx="6" fill="#E2E4E8" stroke="none"/>
+                  <rect x="20" y="28" width="64" height="56" rx="6"/>
+                  <line x1="20" y1="44" x2="84" y2="44"/>
+                  <line x1="34" y1="20" x2="34" y2="34"/>
+                  <line x1="70" y1="20" x2="70" y2="34"/>
+                  <line x1="36" y1="58" x2="44" y2="58"/>
+                  <line x1="50" y1="58" x2="58" y2="58"/>
+                  <line x1="64" y1="58" x2="72" y2="58"/>
+                  <line x1="36" y1="70" x2="44" y2="70"/>
+                </svg>
+              )},
+              {label:'2 недели', price:'8 000 ₽', icon:(
+                /* moon phases */
+                <svg width="110" height="90" viewBox="0 0 110 90" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <circle cx="22" cy="50" r="14" fill="#E2E4E8" stroke="#C9CBD0"/>
+                  <circle cx="55" cy="50" r="14" fill="#E2E4E8" stroke="#C9CBD0"/>
+                  <path d="M55 36 a14 14 0 0 1 0 28 z" fill="#C9CBD0" stroke="none"/>
+                  <circle cx="88" cy="50" r="14" fill="#C9CBD0" stroke="#C9CBD0"/>
+                </svg>
+              )},
+              {label:'1 месяц', price:'16 000 ₽', icon:(
+                /* calendar grid full month */
+                <svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="#C9CBD0" strokeWidth="2">
+                  <rect x="14" y="22" width="82" height="68" rx="6" fill="#E2E4E8" stroke="none"/>
+                  <rect x="14" y="22" width="82" height="68" rx="6"/>
+                  <line x1="14" y1="38" x2="96" y2="38"/>
+                  {[0,1,2,3,4].map(c => <line key={'v'+c} x1={14+(c+1)*82/6} y1="38" x2={14+(c+1)*82/6} y2="90"/>)}
+                  {[0,1,2].map(r => <line key={'h'+r} x1="14" y1={38+(r+1)*52/4} x2="96" y2={38+(r+1)*52/4}/>)}
+                  <line x1="30" y1="14" x2="30" y2="28"/>
+                  <line x1="80" y1="14" x2="80" y2="28"/>
+                </svg>
+              )},
+            ].map((t, i) => (
+              <div key={i} style={{
+                position:'relative', height:96, borderRadius:14, background:'#FAFBFB',
+                border: i===1 ? '2px solid #1f2937' : '1px solid #ececef',
+                padding:'12px 14px', display:'flex', flexDirection:'column', justifyContent:'space-between',
+                font:'700 13px/1 Inter,sans-serif', color: i===1 ? '#1f2937' : 'var(--wf-stroke)',
+                overflow:'hidden',
+              }}>
+                <div style={{position:'absolute', right:-18, bottom:-18, opacity:0.95, pointerEvents:'none'}}>{t.icon}</div>
+                <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)', position:'relative'}}>{t.label}</div>
+                <div style={{position:'relative'}}>{t.price}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{height:14}}/>
+          <div className="wf-btn wf-btn--ghost" style={{width:'100%'}}>Оплатить выбранный · 4 000 ₽</div>
+          <WFPin n="C" x={20} y={-12} note="Шторка: 4 тарифа с тематическими картинками + кнопка оплаты" side="right"/>
+        </div>
+      )}
+    </WFFrame>
+  );
+}
+
+window.ClientRental = ClientRental;
+
+</script>
+
+<script type="text/babel">
+// Screen 2 — Admin · Все аренды (список = дашборд)
+// Screen 3 — Admin · Поп-овер смены статуса
+
+function AdminAllRents() {
+  return (
+    <WFFrame screenLabel="02 Admin · Все аренды (дашборд)">
+      <WFTopBar title="Все аренды" leading="logout" trailing="menu"/>
+
+      {/* Dashboard summary tiles */}
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10}}>
+        <div className="wf-stat">
+          <div className="wf-stat__label">Активных</div>
+          <div className="wf-stat__value">12</div>
+        </div>
+        <div className="wf-stat">
+          <div className="wf-stat__label">Долг общий</div>
+          <div className="wf-stat__value wf-stat__value--debt">38 400 ₽</div>
+        </div>
+        <div className="wf-stat">
+          <div className="wf-stat__label">За месяц</div>
+          <div className="wf-stat__value wf-stat__value--profit">+124 K</div>
+        </div>
+      </div>
+      <WFPin n="1" x={395} y={120} note="Сводка по аренде наверху — долг общий, активные, прибыль" side="left"/>
+
+      {/* Search + filter chips */}
+      <div style={{position:'absolute', left:23, top:194, width:368, display:'flex', flexDirection:'column', gap:10}}>
+        <div className="wf-search">
+          <div className="wf-search__icon"/>
+          <span>Поиск по клиенту, велосипеду…</span>
+        </div>
+        <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
+          <div className="wf-chip wf-chip--active">Все<span className="wf-chip__count">14</span></div>
+          <div className="wf-chip">Долгосрочные<span className="wf-chip__count">8</span></div>
+          <div className="wf-chip">Должники<span className="wf-chip__count">3</span></div>
+          <div className="wf-chip">У меня<span className="wf-chip__count">2</span></div>
+        </div>
+      </div>
+      <WFPin n="2" x={395} y={210} note="Чипы статусов = быстрый фильтр (зел/жёлт/фиол)" side="left"/>
+
+      {/* Rentals list */}
+      <div style={{position:'absolute', left:0, top:300, right:0, bottom:86, overflow:'hidden', padding:'0 0 8px'}}>
+        <WFPersonRow x={23} y={0} ringColor="green" titleW={150} lines={[140,90]} pill={{kind:'profit', label:'Прибыль', value:'12 400'}}/>
+        <WFPersonRow x={23} y={125} ringColor="yellow" titleW={130} lines={[150,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
+        <WFPersonRow x={23} y={250} ringColor="magenta" titleW={140} lines={[120,100]} pill={{kind:'neutral', label:'У меня', value:'—'}}/>
+        <WFPersonRow x={23} y={375} ringColor="green" titleW={160} lines={[130,90]} pill={{kind:'profit', label:'Прибыль', value:'8 200'}}/>
+      </div>
+      <WFPin n="3" x={5} y={310} note="Карточка: фото велика (рамка = статус), ФИО, велосипед, оплачено до, плашка справа" side="right"/>
+      <WFPin n="4" x={70} y={335} note="ТАП на иконку → поп-овер смены статуса (см. экран 3)" side="right"/>
+
+      <WFTabBar active="home"/>
+    </WFFrame>
+  );
+}
+
+function AdminStatusPopover() {
+  return (
+    <WFFrame screenLabel="03 Admin · Смена статуса аренды">
+      <WFTopBar title="Все аренды" leading="logout" trailing="menu"/>
+      <div style={{position:'absolute', left:23, top:102, right:23, bottom:140, opacity:.5}}>
+        <div className="wf-stat" style={{height:60, marginBottom:12}}><div className="wf-bar" style={{width:120,height:8}}/></div>
+        <WFPersonRow x={0} y={70} ringColor="yellow" titleW={130} lines={[150,80]} pill={{kind:'debt', label:'Долг', value:'4 280'}}/>
+      </div>
+
+      {/* Dimmed overlay */}
+      <div style={{position:'absolute', inset:0, background:'rgba(20,23,24,0.35)'}}/>
+
+      {/* The popover */}
+      <div className="wf-popover" style={{ left: 70, top: 195 }}>
+        <div className="wf-popover__row">
+          <div className="wf-popover__dot" style={{borderColor:'#34C759'}}/>
+          <div>Долгосрочная аренда</div>
+        </div>
+        <div className="wf-popover__row" style={{background:'#f3f4f6'}}>
+          <div className="wf-popover__dot" style={{borderColor:'#FFCC00'}}/>
+          <div>Вернут в течении недели</div>
+        </div>
+        <div className="wf-popover__row">
+          <div className="wf-popover__dot" style={{borderColor:'#CB30E0'}}/>
+          <div>Велосипед у меня</div>
+        </div>
+      </div>
+      <WFPin n="1" x={285} y={195} note="3 статуса = 3 цвета рамки. Тап → меняется ring" side="left"/>
+      <WFPin n="2" x={285} y={245} note="Текущий выделен заливкой" side="left"/>
+
+      <WFTabBar active="home"/>
+    </WFFrame>
+  );
+}
+
+window.AdminAllRents = AdminAllRents;
+window.AdminStatusPopover = AdminStatusPopover;
+
+</script>
+
+<script type="text/babel">
+// Screen 4 — Admin · Детали аренды (журнал + действия)
+
+function AdminRentDetail() {
+  return (
+    <WFFrame screenLabel="04 Admin · Детали аренды">
+      <WFTopBar title="Аренда" leading="back" trailing="menu"/>
+
+      {/* Bike + status */}
+      <div className="wf-card" style={{position:'absolute', left:23, top:102, width:368, height:140, padding:18, display:'flex', gap:14, alignItems:'center'}}>
+        <div className="wf-square" style={{width:80, height:80, borderRadius:18, boxShadow:'inset 0 0 0 3px #FFCC00'}}/>
+        <div style={{flex:1, display:'flex', flexDirection:'column', gap:8}}>
+          <WFText w={60} h={8} tier={1}/>
+          <WFText w={170} h={14} tier={3}/>
+          <WFText w={120} h={9} tier={1}/>
+          <div style={{display:'flex', gap:14, marginTop:6}}>
+            <div style={{display:'flex', flexDirection:'column', gap:4}}>
+              <WFText w={50} h={8}/>
+              <WFText w={70} h={11} tier={3}/>
+            </div>
+            <div style={{display:'flex', flexDirection:'column', gap:4}}>
+              <WFText w={60} h={8}/>
+              <WFText w={60} h={11} tier={3}/>
+            </div>
+          </div>
+        </div>
+        <WFPin n="1" x={395} y={-12} note="Велосипед + статус (цвет рамки переключается тапом)" side="left"/>
+      </div>
+
+      {/* Renter row -> opens client card */}
+      <div className="wf-card" style={{position:'absolute', left:23, top:258, width:368, height:78, padding:'14px 18px', display:'flex', alignItems:'center', gap:14}}>
+        <div className="wf-circle" style={{width:46, height:46}}/>
+        <div style={{flex:1, display:'flex', flexDirection:'column', gap:6}}>
+          <div style={{font:'600 10px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.06em'}}>Арендатор</div>
+          <WFText w={150} h={13} tier={3}/>
+          <WFText w={90} h={9} tier={1}/>
+        </div>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#A7A7AB" strokeWidth="2.04" strokeLinecap="round"><polyline points="1 1 7 7 1 13"/></svg>
+        <WFPin n="2" x={-12} y={-12} note="Тап → карточка клиента (экран 7)" side="right"/>
+      </div>
+
+      {/* Debt + journal header */}
+      <div style={{position:'absolute', left:23, top:352, width:368, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <div className="wf-pill wf-pill--debt" style={{minWidth:120, padding:'10px 16px'}}>
+          <div className="wf-pill__label">Текущий долг</div>
+          <div className="wf-pill__value" style={{fontSize:18}}>4 280 ₽</div>
+        </div>
+        <div className="wf-section-head">Журнал</div>
+      </div>
+
+      {/* Ledger entries */}
+      <div style={{position:'absolute', left:23, top:418, width:368, display:'flex', flexDirection:'column', gap:8}}>
+        {[
+          {k:'PAYMENT', v:'+4 000 ₽', d:'12 апр'},
+          {k:'CHARGE', v:'−4 000 ₽', d:'05 апр'},
+          {k:'ADJUSTMENT', v:'−1 020 ₽', d:'02 апр'},
+          {k:'PAYMENT', v:'+8 000 ₽', d:'29 мар'},
+        ].map((e, i) => (
+          <div key={i} style={{display:'flex', alignItems:'center', gap:12, padding:'10px 14px', background:'#fff', borderRadius:10, border:'1px solid #ececef'}}>
+            <div style={{font:'700 10px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.06em', width:90}}>{e.k}</div>
+            <div style={{flex:1, font:'700 13px/1 Inter,sans-serif', color: e.v.startsWith('+') ? '#238F47' : '#D63034'}}>{e.v}</div>
+            <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)'}}>{e.d}</div>
+          </div>
+        ))}
+      </div>
+      <WFPin n="3" x={395} y={418} note="Журнал: CHARGE / PAYMENT / ADJUSTMENT — формула долга" side="left"/>
+
+      {/* Action bar */}
+      <div style={{position:'absolute', left:23, right:23, bottom:106, display:'flex', gap:8}}>
+        <div className="wf-btn wf-btn--ghost" style={{flex:1}}>+ Корректировка</div>
+        <div className="wf-btn wf-btn--danger" style={{flex:1}}>Завершить</div>
+      </div>
+      <WFPin n="4" x={5} y={780} note="Действия: корректировка (sheet) и завершение аренды" side="right"/>
+
+      <WFTabBar active="home"/>
+    </WFFrame>
+  );
+}
+
+window.AdminRentDetail = AdminRentDetail;
+
+// Screen 04b — Admin · Корректировка долга (sheet overlay)
+function AdminAdjustDebt({ direction = 'decrease' } = {}) {
+  return (
+    <WFFrame screenLabel="04b Admin · Корректировка долга">
+      <WFTopBar title="Аренда" leading="back" trailing="menu"/>
+
+      {/* Dimmed background hint: rent-detail card visible faintly */}
+      <div style={{position:'absolute', left:23, top:102, width:368, opacity:0.45}}>
+        <div className="wf-card" style={{padding:'18px', display:'flex', gap:14, alignItems:'center'}}>
+          <div className="wf-square" style={{width:48, height:48, borderRadius:12, boxShadow:'inset 0 0 0 3px #FFCC00'}}/>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:6}}>
+            <div style={{font:'700 13px/1.1 Inter,sans-serif', color:'var(--wf-stroke)'}}>№1 Wenbox Monster</div>
+            <div style={{font:'500 11px/1.1 Inter,sans-serif', color:'var(--wf-label)'}}>Иванов · до 07 май</div>
+          </div>
+          <div style={{font:'700 13px/1 Inter,sans-serif', color:'#D63034'}}>3 500 ₽</div>
+        </div>
+      </div>
+      <div style={{position:'absolute', inset:0, background:'rgba(20,23,24,0.35)'}}/>
+
+      {/* Bottom sheet */}
+      <div className="wf-sheet" style={{height: 350, bottom: -26}}>
+        <div className="wf-sheet__handle"/>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14}}>
+          <div style={{font:'700 16px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>Корректировка долга</div>
+          <div style={{font:'500 12px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Закрыть ✕</div>
+        </div>
+
+        {/* Segmented control */}
+        <div style={{display:'flex', background:'#EEF0F4', borderRadius:10, padding:3, gap:3, marginBottom:10}}>
+          <div style={{
+            flex:1, height:34, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center',
+            background: direction === 'decrease' ? '#fff' : 'transparent',
+            border: direction === 'decrease' ? '1px solid #1f2937' : '0',
+            boxShadow: direction === 'decrease' ? '0 2px 6px rgba(20,23,24,0.08)' : 'none',
+            font:`${direction === 'decrease' ? 700 : 500} 12px/1 Inter,sans-serif`,
+            color:'var(--wf-stroke)',
+          }}>− Уменьшить</div>
+          <div style={{
+            flex:1, height:34, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center',
+            background: direction === 'increase' ? '#fff' : 'transparent',
+            border: direction === 'increase' ? '1px solid #1f2937' : '0',
+            boxShadow: direction === 'increase' ? '0 2px 6px rgba(20,23,24,0.08)' : 'none',
+            font:`${direction === 'increase' ? 700 : 500} 12px/1 Inter,sans-serif`,
+            color:'var(--wf-stroke)',
+          }}>+ Увеличить</div>
+        </div>
+
+        {/* Сумма */}
+        <div className="wf-input" style={{height:56, padding:'0 18px', marginBottom:10}}>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Сумма, ₽</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+
+        <div className="wf-btn" style={{width:'100%', height:48}}>Применить</div>
+        <WFPin n="1" x={20} y={-12} note="Шит снизу: направление → сумма → применить" side="right"/>
+      </div>
+    </WFFrame>
+  );
+}
+window.AdminAdjustDebt = AdminAdjustDebt;
+
+</script>
+
+<script type="text/babel">
+// Screens 5 (Все клиенты), 6 (Карточка клиента), 7 (Новый клиент)
+
+function AdminAllClients() {
+  return (
+    <WFFrame screenLabel="05 Admin · Все клиенты">
+      <WFTopBar title="Клиенты" leading="logout" trailing="plus"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:10}}>
+        <div className="wf-search">
+          <div className="wf-search__icon"/>
+          <span>Поиск: ФИО, телефон, паспорт</span>
+        </div>
+        <div style={{display:'flex', gap:8}}>
+          <div className="wf-chip wf-chip--active">Все<span className="wf-chip__count">42</span></div>
+          <div className="wf-chip">Должники<span className="wf-chip__count">3</span></div>
+          <div className="wf-chip">Активные<span className="wf-chip__count">14</span></div>
+        </div>
+      </div>
+      <WFPin n="1" x={395} y={120} note="Поиск по 3 ключам сразу + 2 фильтра" side="left"/>
+
+      <div className="wf-card" style={{position:'absolute', left:23, top:206, width:368, padding:'4px 14px', boxSizing:'border-box'}}>
+        {[
+          {name:'Иванов Иван Иванович', meta:'№1 Wenbox · до 07 май', debt:'3 500 ₽'},
+          {name:'Петров Пётр Петрович', meta:'№2 Cube · до 14 май', debt:null},
+          {name:'Сидоров Сидор Сидорович', meta:'№3 Wenbox Monster · до 22 май', debt:'8 200 ₽'},
+          {name:'Алексеев Алексей', meta:'Без аренды · последняя 12 мар', debt:null},
+          {name:'Кузнецов Илья Сергеевич', meta:'№4 Specialized · до 30 май', debt:null},
+          {name:'Михайлов Михаил', meta:'Без аренды · последняя 02 янв', debt:null},
+          {name:'Соколов Артём', meta:'№5 Atom · до 12 июн', debt:'1 200 ₽'},
+          {name:'Волков Дмитрий', meta:'Без аренды · последняя 28 фев', debt:null},
+        ].map((c,i,arr) => (
+          <div key={i} style={{
+            padding:'10px 0', display:'flex', alignItems:'center', gap:12,
+            borderBottom: i === arr.length - 1 ? 'none' : '1px solid #ECECEC',
+          }}>
+            <div style={{width:36, height:36, borderRadius:12, background:'#E5F4EA', border:'1px solid #34C759', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F7E3D" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:3}}>
+              <span style={{font:'600 12px/1.1 Inter,sans-serif', color:'var(--wf-stroke)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c.name}</span>
+              <span style={{font:'500 10px/1.1 Inter,sans-serif', color:'var(--wf-label)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{c.meta}</span>
+            </div>
+            {c.debt && <span style={{font:'700 12px/1 Inter,sans-serif', color:'#D63034'}}>{c.debt}</span>}
+            <svg width="5" height="9" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
+          </div>
+        ))}
+      </div>
+      <WFPin n="2" x={395} y={210} note="Зелёная кнопка-телефон вместо аватарки — звонок прямо из списка" side="left"/>
+      <WFPin n="3" x={395} y={695} note="«+» в топ-баре → новый клиент (экран 7)" side="left"/>
+
+      <WFTabBar active="clients"/>
+    </WFFrame>
+  );
+}
+
+function AdminClientCard({ active = true, confirmDelete = false } = {}) {
+  return (
+    <WFFrame screenLabel={`06 Admin · Карточка клиента${confirmDelete ? ' · Подтверждение' : (active ? ' · Активный' : ' · Неактивный')}`}>
+      <WFTopBar title="Клиент" leading="back" trailing="none"/>
+      {/* Custom trailing cluster: edit + delete */}
+      <div style={{position:'absolute', right:23, top:41, height:45, display:'flex', gap:8, zIndex:5}}>
+        <div className="wf-topbar__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <div className="wf-topbar__btn" style={{borderColor:'#D63034'}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D63034" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* UNIFIED PROFILE SECTION — bike header + finances + comment + fields all-in-one */}
+      <div style={{position:'absolute', left:23, top:118, width:368, display:'flex', flexDirection:'column', gap:18}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+
+        {active ? (
+          <div style={{display:'flex', gap:14, alignItems:'center'}}>
+            <div className="wf-square" style={{width:64, height:64, borderRadius:14, boxShadow:'inset 0 0 0 3px #34C759', flexShrink:0}}/>
+            <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:4}}>
+              <div style={{font:'700 14px/1.2 Inter,sans-serif', color:'var(--wf-stroke)'}}>№1 Wenbox Monster</div>
+              <div style={{font:'500 12px/1.2 Inter,sans-serif', color:'var(--wf-label)'}}>3 000 ₽/нед</div>
+              <div className="wf-pill wf-pill--profit" style={{minWidth:0, padding:'4px 10px', alignSelf:'flex-start', marginTop:4}}>
+                <div className="wf-pill__value" style={{fontSize:11}}>Активный</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{display:'flex', alignItems:'center', justifyContent:'flex-start'}}>
+            <div className="wf-pill wf-pill--neutral" style={{minWidth:0, padding:'4px 10px'}}>
+              <div className="wf-pill__value" style={{fontSize:11}}>Неактивный</div>
+            </div>
+          </div>
+        )}
+
+        <div style={{display:'flex', justifyContent:'space-between', gap:6}}>
+          {(active
+            ? [['Оплачено','0 ₽','#1f2937'],['Долг','3 500 ₽','#D63034'],['Коррект.','0 ₽','#1f2937'],['Оплач. до','07 май 2025','#1f2937']]
+            : [['Оплачено','24 500 ₽','#1f2937'],['Долг','0 ₽','#1f2937'],['Коррект.','0 ₽','#1f2937'],['Послед.','12 мар 2025','#1f2937']]
+          ).map((f,i)=>(
+            <div key={i} style={{display:'flex', flexDirection:'column', gap:3, minWidth:0}}>
+              <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.04em'}}>{f[0]}</div>
+              <div style={{font:'700 13px/1 Inter,sans-serif', color:f[2]}}>{f[1]}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{display:'flex', flexDirection:'column', gap:4}}>
+          <div style={{font:'500 9px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.06em'}}>Комментарий</div>
+          <div style={{font:'500 12px/1.4 Inter,sans-serif', color:'var(--wf-stroke)'}}>{active ? 'Платит вовремя, постоянный клиент с прошлого года.' : 'Уехал на лето, вернёт велик в сентябре.'}</div>
+        </div>
+
+        {[
+          ['ФИО','IP UI Client 0de20a0f3d'],
+          ['Адрес','Moscow, 0de20a0f3d'],
+          ['Паспорт','4321 0de20a0f3d'],
+        ].map((p,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{p[0]}</div>
+              <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>{p[1]}</div>
+            </div>
+          </div>
+        ))}
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Рабочий (TG)</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>+7 900 20a0f3d</div>
+          </div>
+        </div>
+      </div>
+      <WFPin n="1" x={-12} y={108} note="Один блок «Профиль»: велосипед + финансы + комментарий + поля + телефоны" side="right"/>
+      <WFPin n="2" x={395} y={50} note="Топбар: редактировать + удалить" side="left"/>
+
+      {/* PAST RENTALS */}
+      <div style={{position:'absolute', left:23, top: active ? 700 : 636, width:368, font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>История аренд</div>
+      <div style={{position:'absolute', left:23, top: active ? 722 : 658, width:368, display:'flex', flexDirection:'column', gap:8}}>
+        {[
+          ['12 мар – 07 май 2025','UIBIKE_a0f3d','+24 500 ₽'],
+          ['02 янв – 28 фев 2025','UIBIKE_b71c2','+18 200 ₽'],
+        ].map((r,i) => (
+          <div key={i} className="wf-card" style={{padding:'12px 14px', display:'flex', alignItems:'center', gap:12}}>
+            <div className="wf-square" style={{width:36, height:36, borderRadius:10}}/>
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:3}}>
+              <span style={{font:'600 12px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>{r[0]}</span>
+              <span style={{font:'500 10px/1 Inter,sans-serif', color:'var(--wf-label)'}}>{r[1]}</span>
+            </div>
+            <span style={{font:'700 12px/1 Inter,sans-serif', color:'#238F47'}}>{r[2]}</span>
+            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
+          </div>
+        ))}
+      </div>
+      <WFPin n="4" x={395} y={active ? 720 : 656} note="История аренд: даты, велосипед, заработано → детали" side="left"/>
+
+      {/* DELETE CONFIRMATION DIALOG */}
+      {confirmDelete && (
+        <>
+          <div style={{position:'absolute', inset:0, background:'rgba(20,23,24,0.55)'}}/>
+          <div style={{
+            position:'absolute', left:'50%', top:'50%', transform:'translate(-50%,-50%)',
+            width: 300, background:'#fff', borderRadius:18, padding:'22px 22px 14px',
+            boxShadow:'0 30px 60px rgba(0,0,0,0.3)',
+          }}>
+            <div style={{font:'700 16px/1.2 Inter,sans-serif', color:'#1f2937', textAlign:'center', marginBottom:8}}>Удалить клиента?</div>
+            <div style={{font:'400 12px/1.4 Inter,sans-serif', color:'var(--wf-label)', textAlign:'center', marginBottom:18}}>
+              История аренд этого клиента будет утеряна. Действие необратимо.
+            </div>
+            <div style={{display:'flex', gap:8}}>
+              <div className="wf-btn wf-btn--ghost" style={{flex:1, height:42}}>Отмена</div>
+              <div className="wf-btn wf-btn--danger" style={{flex:1, height:42}}>Удалить</div>
+            </div>
+          </div>
+          <WFPin n="5" x={20} y={400} note="Подтверждение: «Удалить» — необратимо" side="right"/>
+        </>
+      )}
+
+      <WFTabBar active="clients"/>
+    </WFFrame>
+  );
+}
+
+function AdminNewClient() {
+  return (
+    <WFFrame screenLabel="07 Admin · Новый клиент">
+      <WFTopBar title="Новый клиент" leading="back" trailing="check"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:18}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+        {['ФИО','Адрес','Паспортные данные'].map((l,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{l}</div>
+              <div className="wf-input__value">введите…</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="1" x={395} y={130} note="Профиль: ФИО, адрес, паспортные данные" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        {/* Динамический список: подпись + телефон, повторяется */}
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>Рабочий (TG)</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value">+7 …</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value">+7 …</div>
+          </div>
+        </div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить телефон</div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить комментарий</div>
+        <WFPin n="2" x={395} y={420} note="Телефоны — динамический список: пара (Подпись + Телефон)" side="left"/>
+        <WFPin n="3" x={395} y={720} note="Опц. кнопки: телефон, комментарий" side="left"/>
+      </div>
+
+      <WFTabBar active="clients"/>
+    </WFFrame>
+  );
+}
+
+window.AdminAllClients = AdminAllClients;
+window.AdminClientCard = AdminClientCard;
+window.AdminNewClient = AdminNewClient;
+
+// Screen 06d — Edit profile (similar to 07 but with prefilled values, "Сохранить")
+function AdminEditClient() {
+  return (
+    <WFFrame screenLabel="06d Admin · Редактирование клиента">
+      <WFTopBar title="Редактировать" leading="back" trailing="check"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:18}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Профиль</div>
+        {[
+          ['ФИО','IP UI Client 0de20a0f3d'],
+          ['Адрес','Moscow, 0de20a0f3d'],
+          ['Паспортные данные','4321 0de20a0f3d'],
+        ].map((p,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{p[0]}</div>
+              <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>{p[1]}</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="1" x={395} y={130} note="Поля заполнены текущими данными — редактируемы" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Телефоны</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Подпись</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>Рабочий (TG)</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Телефон</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:600}}>+7 900 20a0f3d</div>
+          </div>
+        </div>
+        <div className="wf-btn wf-btn--soft" style={{width:'100%'}}>+ Добавить телефон</div>
+
+        <div className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)', height:'auto', minHeight:56, alignItems:'flex-start', padding:'14px 18px'}}>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Комментарий</div>
+            <div className="wf-input__value" style={{color:'var(--wf-stroke)', fontWeight:500, lineHeight:1.4, whiteSpace:'normal'}}>Платит вовремя, постоянный клиент с прошлого года.</div>
+          </div>
+        </div>
+        <WFPin n="2" x={395} y={680} note="Комментарий — многострочный (как в шапке 06)" side="left"/>
+
+        <div className="wf-btn wf-btn--danger" style={{width:'100%', marginTop:8}}>Удалить клиента</div>
+        <WFPin n="3" x={395} y={760} note="Удаление — внизу, как destructive action" side="left"/>
+      </div>
+
+      <WFTabBar active="clients"/>
+    </WFFrame>
+  );
+}
+window.AdminEditClient = AdminEditClient;
+
+</script>
+
+<script type="text/babel">
+// Screens 8 (Все велосипеды), 9 (Новый велосипед)
+
+function BikeRow({ y, ringColor = 'green', titleW = 150 }) {
+  return (
+    <div className="wf-card" style={{position:'absolute', left:23, top:y, width:368, height:96, padding:'16px 16px', display:'flex', alignItems:'center', gap:14}}>
+      <div className="wf-square" style={{width:64, height:64, borderRadius:14, boxShadow:`inset 0 0 0 3px ${ringColor === 'green' ? '#34C759' : ringColor === 'yellow' ? '#FFCC00' : '#CB30E0'}`}}/>
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:6}}>
+        <WFText w={titleW} h={13} tier={3}/>
+        <WFText w={120} h={10} tier={1}/>
+        <WFText w={90} h={9} tier={1}/>
+      </div>
+      <div style={{display:'flex', flexDirection:'column', alignItems:'flex-end', gap:6}}>
+        <WFText w={70} h={12} tier={3}/>
+        <WFText w={50} h={9}/>
+      </div>
+    </div>
+  );
+}
+
+function AdminAllBikes() {
+  const Row = ({ ring, name, meta, rate, last }) => (
+    <div style={{
+      padding:'10px 0', display:'flex', alignItems:'center', gap:12,
+      borderBottom: last ? 'none' : '1px solid #ECECEC',
+    }}>
+      <div className="wf-square" style={{width:30, height:30, borderRadius:8, boxShadow:`inset 0 0 0 2px ${ring}`}}/>
+      <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:3}}>
+        <span style={{font:'600 12px/1.1 Inter,sans-serif', color:'var(--wf-stroke)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{name}</span>
+        <span style={{font:'500 10px/1.1 Inter,sans-serif', color:'var(--wf-label)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{meta}</span>
+      </div>
+      <span style={{font:'700 12px/1 Inter,sans-serif', color:'var(--wf-stroke)'}}>{rate}</span>
+      <svg width="5" height="9" viewBox="0 0 6 10" fill="none" stroke="#A7A7AB" strokeWidth="1.5" strokeLinecap="round"><polyline points="1 1 5 5 1 9"/></svg>
+    </div>
+  );
+  return (
+    <WFFrame screenLabel="08 Admin · Все велосипеды">
+      <WFTopBar title="Велосипеды" leading="logout" trailing="plus"/>
+
+      {/* Search + filter chips (стиль = экран 05) */}
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:10}}>
+        <div className="wf-search">
+          <div className="wf-search__icon"/>
+          <span>Поиск: модель, SN, арендатор</span>
+        </div>
+        <div style={{display:'flex', gap:8}}>
+          <div className="wf-chip wf-chip--active">Все<span className="wf-chip__count">17</span></div>
+          <div className="wf-chip">В аренде<span className="wf-chip__count">12</span></div>
+          <div className="wf-chip">У меня<span className="wf-chip__count">5</span></div>
+        </div>
+      </div>
+      <WFPin n="1" x={395} y={120} note="Поиск + фильтры «Все / В аренде / У меня»" side="left"/>
+
+      {/* Unified list */}
+      <div className="wf-card" style={{position:'absolute', left:23, top:206, width:368, padding:'4px 14px', boxSizing:'border-box'}}>
+        <Row ring="#FFCC00" name="№1 Wenbox Monster" meta="Иванов · до 07 май" rate="3 000 ₽/нед"/>
+        <Row ring="#FFCC00" name="№2 Cube Reaction" meta="Петров · до 14 май" rate="2 500 ₽/нед"/>
+        <Row ring="#CB30E0" name="№3 Specialized Turbo" meta="Сидоров · вернут в течении нед." rate="4 200 ₽/нед"/>
+        <Row ring="#34C759" name="№4 Atom Lite" meta="Кузнецов · долгосрочно" rate="2 100 ₽/нед"/>
+        <Row ring="#34C759" name="№5 Atom V8" meta="Соколов · до 12 июн" rate="2 800 ₽/нед"/>
+        <Row ring="#34C759" name="№8 Atom V8 Pro" meta="SN AT-08-2841 · свободен" rate="2 800 ₽/нед"/>
+        <Row ring="#34C759" name="№9 Cube Reaction" meta="SN CB-09-1102 · свободен" rate="2 500 ₽/нед"/>
+        <Row ring="#34C759" name="№10 Trek Marlin" meta="SN TR-10-7765 · свободен" rate="2 200 ₽/нед" last/>
+      </div>
+      <WFPin n="2" x={395} y={210} note="Единый список. Цвет рамки = статус (зел/жёлт/фиол)" side="left"/>
+
+      <WFTabBar active="bikes"/>
+    </WFFrame>
+  );
+}
+
+function AdminNewBike({ hasPhoto = false }) {
+  return (
+    <WFFrame screenLabel={`09 Admin · Новый велосипед (${hasPhoto ? 'с фото' : 'пусто'})`}>
+      <WFTopBar title="Новый велосипед" leading="back" trailing="check"/>
+
+      {/* Photo slot — empty state */}
+      {!hasPhoto && (
+        <>
+          <div style={{position:'absolute', left:23, top:102, width:368, height:200, borderRadius:14, background:'#EEF0F3', border:'1.5px dashed #1f2937', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12}}>
+            <div style={{width:56, height:56, borderRadius:14, background:'#fff', border:'1.5px solid #1f2937', display:'flex', alignItems:'center', justifyContent:'center'}}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div style={{font:'700 13px/1 Inter,sans-serif', color:'#1f2937'}}>Загрузить фото</div>
+            <div style={{font:'500 11px/1 Inter,sans-serif', color:'var(--wf-label)'}}>Нажмите, чтобы выбрать из галереи</div>
+          </div>
+          <WFPin n="1" x={395} y={120} note="Пустой слот: пунктирная рамка + иконка фото + подпись + «+» сверху-справа = «нажмите чтобы загрузить»" side="left"/>
+        </>
+      )}
+
+      {/* Photo slot — filled state */}
+      {hasPhoto && (
+        <>
+          <div style={{position:'absolute', left:23, top:102, width:368, height:200, borderRadius:14, overflow:'hidden', border:'1.5px solid #1f2937', background:`#d3d7dd url('../ds/bike-photo.png') center/cover no-repeat`}}>
+            {/* Tap-to-change strip at the bottom */}
+            <div style={{position:'absolute', left:0, right:0, bottom:0, padding:'10px 14px', background:'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0))', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+              <div style={{font:'600 12px/1 Inter,sans-serif', color:'#fff', display:'flex', alignItems:'center', gap:6}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Сменить фото
+              </div>
+              <div style={{font:'500 11px/1 Inter,sans-serif', color:'rgba(255,255,255,0.85)'}}>тап по фото</div>
+            </div>
+            {/* Floating action chip in the corner */}
+            <div style={{position:'absolute', right:10, top:10, height:32, padding:'0 12px', borderRadius:16, background:'rgba(20,23,24,0.85)', display:'none', alignItems:'center', gap:6}}>
+              <span style={{font:'600 11px/1 Inter,sans-serif', color:'#fff'}}>Изменить</span>
+            </div>
+          </div>
+          <WFPin n="1" x={395} y={120} note="Заполненный слот: чип «Изменить» в углу + полоса «Сменить фото» снизу + красная иконка удалить — три явные точки тапа" side="left"/>
+        </>
+      )}
+
+      <div style={{position:'absolute', left:23, top:322, width:368, display:'flex', flexDirection:'column', gap:14}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Обязательные</div>
+        {['Название/модель','Серийный номер / VIN','Серийный номер мотора','Недельная ставка W (₽)'].map((l,i) => (
+          <div key={i} className="wf-input">
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{l}</div>
+              <div className="wf-input__value">введите…</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="2" x={395} y={400} note="Ставка W → расчёт день/нед/мес автоматический" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:4}}>Опционально</div>
+        {['Серийный номер АКБ 1','Серийный номер АКБ 2'].map((l,i) => (
+          <div key={i} className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{l}</div>
+              <div className="wf-input__value">не обязательно</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <WFTabBar active="bikes"/>
+    </WFFrame>
+  );
+}
+
+window.AdminAllBikes = AdminAllBikes;
+window.AdminNewBike = AdminNewBike;
+
+// Screen 10 — Admin · Новая аренда (модальный шит)
+// Dropdown component — visually distinct from text input.
+// states: 'empty' | 'selected' | 'open'
+function WFDropdown({ label, state = 'empty', value, placeholder = 'выбрать из списка' }) {
+  const isOpen = state === 'open';
+  const isSelected = state === 'selected';
+  return (
+    <div style={{
+      minHeight: 56,
+      borderRadius: 12.84,
+      background: isOpen ? '#F0F2F5' : '#fff',
+      border: '1.5px solid #1f2937',
+      boxShadow: isOpen ? '0 0 0 3px rgba(31,41,55,0.18)' : 'none',
+      display:'flex', alignItems:'center', gap:10, padding:'0 14px 0 18px',
+      position:'relative',
+    }}>
+      {/* Left bar to mark this is a picker, not a text field */}
+      <div style={{position:'absolute', left:0, top:8, bottom:8, width:4, borderRadius:'0 4px 4px 0', background: isSelected || isOpen ? '#1f2937' : '#cdd1d9'}}/>
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+        <div style={{font:'700 10px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>{label}</div>
+        <div style={{font: isSelected ? '600 13px/1 Inter,sans-serif' : '500 13px/1 Inter,sans-serif', color: isSelected ? 'var(--wf-stroke)' : 'var(--wf-fill-text)'}}>
+          {isSelected ? value : placeholder}
+        </div>
+      </div>
+      {/* Chevron rotates when open — explicit picker affordance */}
+      <div style={{
+        width:28, height:28, borderRadius:8,
+        background: isOpen ? '#1f2937' : '#EAEAF0',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .15s',
+      }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isOpen ? '#fff' : '#1f2937'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  );
+}
+
+function AdminNewRent({ bikeState = 'empty' }) {
+  // popover with 3 list items, anchored under the bike dropdown when open
+  const isOpen = bikeState === 'open';
+  const bikeValue = bikeState === 'selected' ? '№1 Wenbox · 3 000 ₽/нед' : null;
+  return (
+    <WFFrame screenLabel={`10 Admin · Новая аренда (${bikeState})`}>
+      <WFTopBar title="Новая аренда" leading="back" trailing="check"/>
+
+      <div style={{position:'absolute', left:23, top:102, width:368, display:'flex', flexDirection:'column', gap:14}}>
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em'}}>Клиент и велосипед</div>
+
+        <WFDropdown label="Клиент" state="selected" value="Тестовый Клиент Иванович"/>
+        <div style={{position:'relative'}}>
+          <WFDropdown label="Велосипед" state={bikeState} value={bikeValue} placeholder="выбрать · покажет ставку"/>
+          {isOpen && (
+            <div style={{
+              position:'absolute', left:0, right:0, top:64,
+              background:'#fff', borderRadius:14,
+              border:'1.5px solid #1f2937',
+              boxShadow:'0 16px 30px rgba(25,28,50,0.22)',
+              padding:6, zIndex:30,
+            }}>
+              {[
+                {n:'№1 Wenbox', r:'3 000 ₽/нед', avail:true, hi:true},
+                {n:'№2 Cube Reaction', r:'2 500 ₽/нед', avail:true},
+                {n:'№3 Specialized Turbo', r:'4 200 ₽/нед', avail:false},
+              ].map((b,i) => (
+                <div key={i} style={{
+                  display:'flex', alignItems:'center', gap:12,
+                  padding:'10px 12px', borderRadius:10,
+                  background: b.hi ? '#F0F2F5' : 'transparent',
+                  opacity: b.avail ? 1 : 0.45,
+                }}>
+                  <div className="wf-thumb wf-thumb--green" style={{width:34, height:34, borderRadius:8}}/>
+                  <div style={{flex:1}}>
+                    <div style={{font:'600 13px/1.2 Inter,sans-serif', color:'#1f2937'}}>{b.n}</div>
+                    <div style={{font:'500 11px/1.2 Inter,sans-serif', color:'var(--wf-label)', marginTop:3}}>{b.r}{!b.avail && ' · занят'}</div>
+                  </div>
+                  {b.hi && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Дата начала</div>
+            <div className="wf-input__value">YYYY-MM-DD</div>
+          </div>
+        </div>
+        <div className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Дата окончания</div>
+            <div className="wf-input__value">не обязательно</div>
+          </div>
+        </div>
+        <WFPin n="1" x={395} y={70} note="Пикер ≠ текстовое поле: тёмная полоска слева + чип-шеврон справа" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Доступ клиента</div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Логин клиента</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div className="wf-input">
+          <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+            <div className="wf-input__label">Пароль клиента</div>
+            <div className="wf-input__value">введите…</div>
+          </div>
+        </div>
+        <div style={{display:'flex', gap:8, marginTop:2}}>
+          <div style={{flex:1, height:44, borderRadius:12, background:'#1f2937', color:'#fff', font:'600 13px/44px Inter,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Сгенерировать
+          </div>
+          <div style={{flex:1, height:44, borderRadius:12, background:'#fff', border:'1.5px solid #1f2937', color:'#1f2937', font:'600 13px/40px Inter,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Скопировать
+          </div>
+        </div>
+        <WFPin n="2" x={395} y={460} note="Кнопки общие на пару: «Сгенерировать» создаёт логин+пароль сразу, «Скопировать» копирует оба" side="left"/>
+
+        <div style={{font:'700 11px/1 Inter,sans-serif', color:'var(--wf-label)', textTransform:'uppercase', letterSpacing:'0.08em', marginTop:6}}>Документы и комментарий</div>
+        {['Ссылка на видео','Ссылка на договор','Комментарий'].map((l,i) => (
+          <div key={i} className="wf-input" style={{borderStyle:'dashed', borderColor:'var(--wf-stroke-soft)'}}>
+            <div style={{flex:1, display:'flex', flexDirection:'column', gap:4}}>
+              <div className="wf-input__label">{l}</div>
+              <div className="wf-input__value">не обязательно</div>
+            </div>
+          </div>
+        ))}
+        <WFPin n="3" x={395} y={628} note="Опциональный блок: видео, договор, коммент" side="left"/>
+      </div>
+
+      <WFTabBar active="home"/>
+    </WFFrame>
+  );
+}
+window.AdminNewRent = AdminNewRent;
+window.WFDropdown = WFDropdown;
+
+</script>
+
+<script type="text/babel">
+  const App = () => {
+    const [t, setTweak] = window.useTweaks(/*EDITMODE-BEGIN*/{
+      "density": "full",
+      "showPins": true,
+      "clientSheetOpen": true
+    }/*EDITMODE-END*/);
+
+    React.useEffect(() => {
+      let style = document.getElementById('wf-pin-style');
+      if (!style) { style = document.createElement('style'); style.id = 'wf-pin-style'; document.head.appendChild(style); }
+      style.textContent = t.showPins ? '' : '.wf-pin{display:none!important}';
+    }, [t.showPins]);
+
+    React.useEffect(() => {
+      document.querySelectorAll('.wf-row').forEach(r => {
+        r.classList.remove('compact','tiny');
+        if (t.density !== 'full') r.classList.add(t.density);
+      });
+    }, [t.density]);
+
+    React.useEffect(() => {
+      const root = window.__clientRoot;
+      if (root) root.render(<window.ClientRental sheetOpen={t.clientSheetOpen}/>);
+    }, [t.clientSheetOpen]);
+
+    return (
+      <window.TweaksPanel title="Wireframes">
+        <window.TweakSection label="Просмотр"/>
+        <window.TweakRadio label="Размер" value={t.density}
+          onChange={v => setTweak('density', v)}
+          options={['tiny','compact','full']}/>
+        <window.TweakToggle label="Подсказки" value={t.showPins} onChange={v => setTweak('showPins', v)}/>
+        <window.TweakSection label="Клиент"/>
+        <window.TweakToggle label="Шторка оплаты" value={t.clientSheetOpen} onChange={v => setTweak('clientSheetOpen', v)}/>
+      </window.TweaksPanel>
+    );
+  };
+
+  const mount = (id, el) => { const r = ReactDOM.createRoot(document.getElementById(id)); r.render(el); return r; };
+
+  window.__clientRoot = mount('screen-client',     <window.ClientRental sheetOpen={true}/>);
+  mount('screen-rents',      <window.AdminAllRents/>);
+  mount('screen-popover',    <window.AdminStatusPopover/>);
+  mount('screen-detail',     <window.AdminRentDetail/>);
+  mount('screen-adjust',     <window.AdminAdjustDebt direction="decrease"/>);
+  mount('screen-clients',    <window.AdminAllClients/>);
+  mount('screen-card',          <window.AdminClientCard active={true}/>);
+  mount('screen-card-inactive', <window.AdminClientCard active={false}/>);
+  mount('screen-card-confirm',  <window.AdminClientCard active={true} confirmDelete={true}/>);
+  mount('screen-card-edit',     <window.AdminEditClient/>);
+  mount('screen-newclient',  <window.AdminNewClient/>);
+  mount('screen-bikes',      <window.AdminAllBikes/>);
+  mount('screen-newbike',    <window.AdminNewBike hasPhoto={false}/>);
+  mount('screen-newbike-filled', <window.AdminNewBike hasPhoto={true}/>);
+  mount('screen-newrent',          <window.AdminNewRent bikeState="empty"/>);
+  mount('screen-newrent-open',     <window.AdminNewRent bikeState="open"/>);
+  mount('screen-newrent-selected', <window.AdminNewRent bikeState="selected"/>);
+
+  const tweaksRoot = document.createElement('div');
+  document.body.appendChild(tweaksRoot);
+  ReactDOM.createRoot(tweaksRoot).render(<App/>);
+</script>
+
+</body>
+</html>

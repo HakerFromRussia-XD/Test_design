@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title>AtomGo · App Store</title>
+<style>
+  html, body { margin:0; padding:0; background:#000; color:#fff; font-family:-apple-system, 'SF Pro Display', 'Inter','Urbanist',system-ui,sans-serif; }
+
+  .strip { display:flex; gap:40px; padding:60px 60px 80px; align-items:flex-start; min-height:100vh; margin-top:56px; }
+
+  .slide {
+    flex:0 0 1290px; width:1290px; height:2796px;
+    border-radius:120px; overflow:hidden; position:relative;
+    box-shadow: 0 60px 120px rgba(0,0,0,0.4);
+  }
+
+  /* Headline */
+  .slide__head { position:absolute; left:0; right:0; top:200px; text-align:center; padding:0 80px; z-index:3; }
+  .slide__title {
+    font-family: -apple-system, 'SF Pro Display', 'Urbanist', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: 184px;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: #fff;
+    margin: 0;
+  }
+  .slide__subtitle {
+    font-family: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 56px;
+    line-height: 1.18;
+    color: #fff;
+    margin: 40px 0 0;
+    text-wrap: balance;
+    opacity: 0.97;
+  }
+
+  /* Phone placeholder (where user will drop their screenshot) */
+  .slot {
+    position:absolute; left:50%; bottom:120px; transform:translateX(-50%); z-index:2;
+    width: 902px; height: 1888px;
+    border: 2px dashed rgba(255,255,255,0.35);
+    border-radius: 118px;
+    display:flex; align-items:center; justify-content:center;
+    color:rgba(255,255,255,0.5);
+    font: 600 38px/1.4 -apple-system,'Inter',sans-serif;
+    text-align:center; padding:0 80px;
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* Background gradients — colorful, saturated, close to Telegram reference */
+  .bg-1 { background: radial-gradient(ellipse at 50% 0%, #6FBE3F 0%, #3A8C3E 65%, #1A4C1F 100%); }
+  .bg-2 { background: linear-gradient(170deg, #FF5E3A 0%, #FF2D55 60%, #B41C3E 100%); }
+  .bg-3 { background: linear-gradient(180deg, #6B3DE4 0%, #A24CF1 100%); }
+  .bg-4 { background: linear-gradient(180deg, #007AFF 0%, #4FA0FF 100%); }
+  .bg-5 { background: linear-gradient(155deg, #1FB2A6 0%, #2DCFA0 60%, #B9E879 100%); }
+
+  /* Toolbar */
+  .toolbar {
+    position:fixed; left:0; right:0; top:0; height:56px; z-index:100;
+    background:rgba(20,23,24,0.92); color:#fff; backdrop-filter: blur(20px);
+    display:flex; align-items:center; padding:0 24px; gap:16px;
+    font:600 13px/1 'Inter',sans-serif;
+  }
+  .toolbar .gap { flex:1; }
+  .toolbar button {
+    background:#fff; color:#111; padding:8px 14px; border-radius:999px;
+    border:0; cursor:pointer; font:600 13px/1 'Inter',sans-serif;
+  }
+  body.zoom-50 .strip { transform: scale(0.5); transform-origin: top left; width: 200%; }
+  body.zoom-33 .strip { transform: scale(0.34); transform-origin: top left; width: 300%; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>AtomGo — App Store screenshots · 1290×2796 (без скриншотов — добавьте свои)</span>
+  <span class="gap"></span>
+  <button onclick="document.body.classList.toggle('zoom-50')">50%</button>
+  <button onclick="document.body.classList.toggle('zoom-33')">34%</button>
+</div>
+
+<div class="strip">
+
+  <div class="slide bg-1">
+    <div class="slide__head">
+      <h1 class="slide__title">Ваша аренда</h1>
+      <p class="slide__subtitle">Велосипед, ставка и срок оплаты —<br/>всё на одном экране.</p>
+    </div>
+    <div class="slot">место для скриншота</div>
+  </div>
+
+  <div class="slide bg-2">
+    <div class="slide__head">
+      <h1 class="slide__title">Видите долг<br/>сразу</h1>
+      <p class="slide__subtitle">Никаких бумажек, СМС от хозяина<br/>и звонков с напоминанием.</p>
+    </div>
+    <div class="slot">место для скриншота</div>
+  </div>
+
+  <div class="slide bg-3">
+    <div class="slide__head">
+      <h1 class="slide__title">Оплата<br/>за два тапа</h1>
+      <p class="slide__subtitle">Выберите тариф и оплачивайте<br/>привычным способом.</p>
+    </div>
+    <div class="slot">место для скриншота</div>
+  </div>
+
+  <div class="slide bg-4">
+    <div class="slide__head">
+      <h1 class="slide__title">Гибкие<br/>тарифы</h1>
+      <p class="slide__subtitle">1 день, неделя, две недели<br/>или весь месяц — как удобно.</p>
+    </div>
+    <div class="slot">место для скриншота</div>
+  </div>
+
+  <div class="slide bg-5">
+    <div class="slide__head">
+      <h1 class="slide__title">Просто<br/>работает</h1>
+      <p class="slide__subtitle">Без подписок, без рекламы<br/>и без лишних экранов.</p>
+    </div>
+    <div class="slot">место для скриншота</div>
+  </div>
+
+</div>
+
+</body>
+</html>
